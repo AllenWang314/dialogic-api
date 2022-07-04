@@ -1,0 +1,34 @@
+{
+  "name": "dialogic-api",
+  "version": "1.0.0",
+  "description": "api helper for the dialogic project",
+  "main": "server/server.js",
+  "scripts": {
+    "hotloader": "webpack serve --config ./webpack.config.js --mode development --port 5000",
+    "start": "nodemon --ignore client/",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AllenWang314/dialogic-api.git"
+  },
+  "keywords": [
+    "dialogic",
+    "random",
+    "sequences"
+  ],
+  "author": "Allen Wang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AllenWang314/dialogic-api/issues"
+  },
+  "homepage": "https://github.com/AllenWang314/dialogic-api#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "http": "^0.0.1-security",
+    "path": "^0.12.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.3.0"
+  }
+}
