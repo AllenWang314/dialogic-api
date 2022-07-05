@@ -1,7 +1,7 @@
 {
   "name": "dialogic-api",
   "version": "1.0.0",
-  "description": "api helper for the dialogic project",
+  "description": "a single api endpoint to help the dialogic project",
   "main": "server/server.js",
   "scripts": {
     "hotloader": "webpack serve --config ./webpack.config.js --mode development --port 5000",
@@ -24,11 +24,34 @@
   },
   "homepage": "https://github.com/AllenWang314/dialogic-api#readme",
   "dependencies": {
+    "@reach/router": "^1.3.4",
+    "core-js": "^3.23.3",
     "express": "^4.18.1",
+    "express-validator": "^6.14.2",
     "http": "^0.0.1-security",
+    "mathjs": "^10.6.4",
+    "nodemon": "^2.0.18",
     "path": "^0.12.7",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.3.0"
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-router-dom": "^5.2.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/polyfill": "^7.4.4",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-react": "^7.12.10",
+    "@babel/preset-stage-0": "^7.8.3",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^5.0.1",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^4.5.0",
+    "react-hot-loader": "^4.13.0",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.11.1",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.4.0"
   }
 }
