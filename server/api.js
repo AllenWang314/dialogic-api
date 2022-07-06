@@ -1,6 +1,7 @@
 const math = require('mathjs');
 const express = require("express");
 const { body, validationResult } = require('express-validator');
+const EPSILON = 0.000000001;
 
 // helper methods
 
@@ -46,12 +47,50 @@ validation:
   n cannot exceed 100 (required)
 */
 router.post("/entropy",
-  body('sequence').exists().isArray(),
+  body('sequence').exists().isArray({
+    min: 1
+  }),
   body('n').exists().isInt({
     max: 100
   }),
   (req, res) => {
 
+    // check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    // check that sequence elements fall in range
+    for (const element of req.body['sequence']) {
+      if (!Number.isInteger(element) || element < 1 || element > req.body['n']) {
+        return res.status(400).json({ errors: [
+            {
+                "value": req.body['sequence'],
+                "msg": "sequences contain invalid elements",
+                "param": "sequence",
+                "location": "body"
+            }
+          ]
+        });
+      }
+    }
+
+    const freq = Array(100).fill(EPSILON);
+    for (const num of req.body['sequence']) {
+      freq[num-1]++;
+    }
+    
+    const arrLength = req.body['sequence'].length;
+    for (var i = 0; i < arrLength; i++) {
+      freq[i] /= arrLength;
+    }
+    
+    const entropy = freq.reduce((prev, curr) => {
+      return prev -= curr * Math.log2(curr)
+    }, 0)
+
+    return res.send({entropy})
 });
 
 
