@@ -1,7 +1,7 @@
 import "./Home.css";
 import Seat from "./Seat";
 import OuterButton from "./OuterButton";
-import InnerButton from "./InnerButton";
+import SeatButton from "./SeatButton";
 import { useState, useEffect } from "react";
 import Xarrow from "react-xarrows";
 
@@ -275,6 +275,13 @@ function Home() {
   const [selected, setSelected] = useState([]);
   const [lines, setLines] = useState([]);
 
+  useEffect(() => {
+    if (selected.length === 2) {
+      setLines([...lines, selected]);
+      setSelected([]);
+    }
+  }, [selected, lines]);
+
   const generateSeats = (students) => {
     return students.map((obj, ind) => {
       return <Seat index={ind} student={obj} numStudents={students.length} />;
@@ -290,7 +297,7 @@ function Home() {
   const generateInnerButtons = (students) => {
     return students.map((obj, ind) => {
       return (
-        <InnerButton
+        <SeatButton
           index={ind}
           student={obj}
           numStudents={students.length}
@@ -301,12 +308,6 @@ function Home() {
     });
   };
 
-  useEffect(() => {
-    if (selected.length === 2) {
-      setLines([...lines, selected]);
-      setSelected([]);
-    }
-  }, [selected, lines]);
   const generateLines = () => {
     return lines.map((line, ind) => {
       return (

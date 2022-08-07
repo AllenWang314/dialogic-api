@@ -1,15 +1,13 @@
-import toast from "react-hot-toast";
-import "./InnerButton.css";
+import "./SeatButton.css";
 
-function InnerButton(props) {
+function SeatButton(props) {
   const turnVar = 1 / props.numStudents;
-  const STROKE_FRACTION = 0.7;
 
   const seatClick = (event) => {
     props.setSelected([...props.selected, props.index.toString()]);
   };
 
-  const width = 240 - 9 * props.numStudents;
+  const width = 240 - 9.5 * props.numStudents;
 
   const styles = {
     transform: `translate(${300 - width / 2}px) translateY(${300 - 10}px) rotate(${
@@ -18,7 +16,7 @@ function InnerButton(props) {
     width: `${width}px`,
   };
 
-  return <div id={props.index} className="inner-button" onClick={seatClick} style={styles}></div>;
+  return <div id={props.index} className="seat-button" onClick={seatClick} style={styles}></div>;
 }
 
-export default InnerButton;
+export default SeatButton;

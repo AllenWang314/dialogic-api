@@ -1,0 +1,8 @@
+.seat-button {
+  grid-area: layer;
+  height: 30px;
+  border-radius: 30px;
+}
+.seat-button:hover {
+  border: 1px solid white;
+}
