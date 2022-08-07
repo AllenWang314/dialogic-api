@@ -1,14 +1,14 @@
 .inner-button {
-    grid-area: layer;
-    display: flex;
-    grid-template-areas: "layer";
-    height: 50px;
-    justify-content: center;
-    z-index:10;
-    border-radius: 50px;
+  grid-area: layer;
+  display: flex;
+  grid-template-areas: "layer";
+  height: 30px;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 50px;
 }
 
-.inner-button:hover{
-    border: 1px solid white;
-    border-radius: 4px;
+.inner-button:hover {
+  border: 1px solid white;
+  border-radius: 4px;
 }
