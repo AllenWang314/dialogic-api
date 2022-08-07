@@ -1,0 +1,14 @@
+.seat {
+    border-radius: 50%;
+    grid-area: layer;
+    display: grid;
+    grid-template-areas: "layer";
+    place-items: center;
+    width: 600px;
+    height: 600px;
+    padding-top: 10px;
+}
+
+.name {
+    color: #D3D5D4;
+}
