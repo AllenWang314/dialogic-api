@@ -437,7 +437,7 @@ function Home() {
       />
        <div className="students-toggle">
         Student Count
-        <select id="menu" onChange={(e) => {
+        <select id="menu" value="average" onChange={(e) => {
           if (e.target.value == "few") {
             setStudents(STUDENTS_FEW)
             setLines([])
