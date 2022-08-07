@@ -1,9 +1,10 @@
 import "./Home.css";
 import Seat from "./Seat";
 import OuterButton from "./OuterButton";
-import InnerButton from "./InnerButton";
 import Modal from "./Modal";
-import { useState } from "react";
+import SeatButton from "./SeatButton";
+import { useState, useEffect } from "react";
+import Xarrow from "react-xarrows";
 
 const STUDENTS_FEW = [
   {
@@ -342,18 +343,28 @@ const ANNOTATIONS = {
 };
 
 function Home() {
-  const students = STUDENTS_MORE;
-  const [annotationMap, setAnnotationMap] = useState(ANNOTATIONS);
   const [annotationModalStudent, setAnnotationModalStudent] = useState(null);
   const [showAnnotations, setShowAnnotations] = useState(true);
+  const [annotationMap, setAnnotationMap] = useState(ANNOTATIONS);
+  const [selected, setSelected] = useState([]);
+  const [lines, setLines] = useState([]);
+  const [students, setStudents] = useState(STUDENTS);
+
 
   const outerButtonClick = (student) => {
-    setAnnotationModalStudent(student)
-  }
+    setAnnotationModalStudent(student);
+  };
+
+  useEffect(() => {
+    if (selected.length === 2) {
+      setLines([...lines, selected]);
+      setSelected([]);
+    }
+  }, [selected, lines]);
 
   const generateSeats = (students) => {
     return students.map((obj, ind) => {
-      return <Seat index={ind} student={obj} numStudents={students.length} />;
+      return <Seat key={ind} index={ind} student={obj} numStudents={students.length} />;
     });
   };
 
@@ -361,6 +372,7 @@ function Home() {
     return students.map((obj, ind) => {
       return (
         <OuterButton
+          key={ind}
           index={ind}
           student={obj}
           numStudents={students.length}
@@ -375,10 +387,35 @@ function Home() {
 
   const generateInnerButtons = (students) => {
     return students.map((obj, ind) => {
-      return <InnerButton index={ind} student={obj} numStudents={students.length} />;
+      return (
+        <SeatButton
+          key={ind}
+          index={ind}
+          student={obj}
+          numStudents={students.length}
+          selected={selected}
+          setSelected={setSelected}
+        />
+      );
     });
   };
 
+  const generateLines = () => {
+    return lines.map((line, ind) => {
+      return (
+        <Xarrow
+          key={ind}
+          start={line[0]}
+          end={line[1]}
+          curveness={0}
+          color={"#9DB5B2"}
+          startAnchor={"middle"}
+          endAnchor={"middle"}
+          animateDrawing={0.1}
+        />
+      );
+    });
+  };
   const styles = {};
 
   return (
@@ -387,25 +424,48 @@ function Home() {
         {generateOuterButtons(students)}
         {generateSeats(students)}
         {generateInnerButtons(students)}
+        {generateLines()}
       </div>
       <Modal
         student={annotationModalStudent}
         annotationMap={annotationMap}
         setAnnotationMap={setAnnotationMap}
         closeModal={() => {
-          setAnnotationModalStudent(null)
+          setAnnotationModalStudent(null);
         }}
         openModal={outerButtonClick}
-      /> 
+      />
+       <div className="students-toggle">
+        Student Count
+        <select id="menu" onChange={(e) => {
+          if (e.target.value == "few") {
+            setStudents(STUDENTS_FEW)
+            setLines([])
+          } else if (e.target.value == "average") {
+            setStudents(STUDENTS)
+            setLines([])
+          } else {
+            setStudents(STUDENTS_MORE)
+            setLines([])
+          }
+        }}>
+    <option value="few">few</option>
+    <option value="average">average</option>
+    <option value="more">more</option>
+</select>
+      </div>
       <div className="annotations-toggle">
-        Annotations {showAnnotations ? "On" : "Off"} 
-      <label className="switch">
-        <input type="checkbox" onClick={() => {
-          setShowAnnotations(!showAnnotations)
-        }}/>
-      <span className="slider round"></span>
-    </label>
-    </div>
+        Annotations {showAnnotations ? "On" : "Off"}
+        <label className="switch">
+          <input
+            type="checkbox"
+            onClick={() => {
+              setShowAnnotations(!showAnnotations);
+            }}
+          />
+          <span className="slider round"></span>
+        </label>
+      </div>
     </div>
   );
 }

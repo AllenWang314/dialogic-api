@@ -3,7 +3,8 @@ import "./Annotation.css";
 
 function Annotation(props) {
     return <div className={props.count == 0 ? "zero-annotation" : "annotation"}>
-        {props.letter} {props.count}
+        <div>{props.letter}</div>
+        <div>{props.count}</div>
     </div>
 }
 
