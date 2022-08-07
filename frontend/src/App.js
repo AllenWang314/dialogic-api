@@ -10,7 +10,7 @@ function App() {
         Dialogic Frontend
       </header>
       <Toaster
-  position="bottom-left"
+  position="top-right"
   reverseOrder={false}
 />
       <Home />

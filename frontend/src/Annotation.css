@@ -1,0 +1,13 @@
+.annotation {
+    color: #D3D5D4;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.zero-annotation {
+    color: #9DB5B2;
+    font-size: 12px; 
+    opacity: 0.5;
+}

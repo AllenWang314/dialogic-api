@@ -1,0 +1,71 @@
+.annotation-modal-root {
+    position: absolute;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.4);
+    left : 0;
+    top: 0;
+    width: 100vw;
+    height : 100vh;
+    opacity: 10;
+    transition: opacity 0.15s ease-out, width 0s linear 0.15s, height 0s linear 0.15s;
+    transition: opacity 0.15s ease-out, width 0s linear 0.15s, height 0s linear 0.15s;
+    z-index: 30;
+}
+
+.annotation-modal {
+    position: absolute;
+    width: 350px;
+    height: 180px;
+    background-color: aqua;
+    right: 0;
+    bottom: 0;
+    padding: 15px;
+    border-top-left-radius: 10px;
+    background-color: #D3D5D4;
+    color: #183A37;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.annotation-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.annotation-modal-header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    font-size: 20px;
+}
+
+.annotation-modal-close:hover {
+    cursor: pointer;
+}
+
+.annotation-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.modal-save {
+    border: 1px solid #183A37;
+    padding: 10px;
+    border-radius: 20px;
+    width: 50px;
+    text-align: center;
+    align-self: flex-end;
+}
+
+.modal-save:hover {
+    background-color: #9DB5B2;
+    cursor: pointer;
+}
+
+input {
+    width: 30px;
+}
