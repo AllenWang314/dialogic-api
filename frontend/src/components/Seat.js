@@ -1,24 +1,29 @@
 import "./Seat.css";
 
-function Seat(props) {
+const Seat = (props) => {
+  // get Name and last initial from full name
   const getName = (name) => {
     const words = name.split(" ");
     return words[0] + " " + words[words.length - 1][0] + ".";
   };
 
+  // STROKE_FRACTION is a magic number we picked that
+  // made the UI look nice
   const turnVar = 1 / props.numStudents;
   const STROKE_FRACTION = 0.7;
+
+  const flipName = props.index > props.numStudents / 4 && props.index < (props.numStudents * 3) / 4;
 
   const styles = {
     transform: `rotate(${turnVar * props.index}turn)`,
   };
 
-  const flipName = props.index > props.numStudents / 4 && props.index < (props.numStudents * 3) / 4;
-
   const nameStyle = {
     transform: "scaleY(-1) scaleX(-1)",
   };
 
+  // we create individual circle arcs as svgs programatically
+  // then we rotate them to the correct place on the circle
   return (
     <div className="seat" style={styles}>
       <div className="name" style={flipName ? nameStyle : {}}>
@@ -41,6 +46,6 @@ function Seat(props) {
       </svg>
     </div>
   );
-}
+};
 
 export default Seat;

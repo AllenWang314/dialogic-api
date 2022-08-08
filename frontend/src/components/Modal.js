@@ -1,16 +1,19 @@
 import "./Modal.css";
 
-function Modal(props) {
+const Modal = (props) => {
+  // if no student assigned, return nothing
   if (props.student == null) {
     return <></>;
   }
 
-  const modalClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  // when the modal is clicked, prevent from closing it
+  const modalClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     return false;
   }
 
+  // use props to set new annotations in parent component
   const changed = (letter, val) => {
     const annotations = props.annotationMap[props.student.student_id];
     const newAnnotations = {...annotations, [letter]: val}
@@ -19,6 +22,7 @@ function Modal(props) {
     props.setAnnotationMap({...props.annotationMap, [props.student.student_id]: newAnnotations})
   }
 
+  // annotations save automatically on edit, the save button just closes the modal
   return (
     <div className="annotation-modal-root" onClick={props.closeModal}>
       <div className="annotation-modal" onClick={modalClick}>

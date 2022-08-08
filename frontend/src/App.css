@@ -2,7 +2,8 @@
   padding: 10px;
   text-align: left;
   background-color: #183A37;
-  min-height: 100vh;
+  min-height: 110vh;
+  min-width: 100vw;
 
   display: flex;
   flex-direction: column;
@@ -21,4 +22,40 @@
   color: #D3D5D4;
   padding: 20px;
   left: 10px;
+}
+
+.small-screen {
+  padding: 10px;
+  text-align: left;
+  background-color: #183A37;
+  min-height: 100vh;
+
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between; 
+  color: #D3D5D4;
+  font-size: 30px;
+  padding: 20px;
+}
+
+/* disable interaction on small screens */
+@media (max-width: 700px) {
+  .small-screen {
+    display: flex;
+  }
+  
+  .App {
+    display: none;
+  }
+}
+
+@media (min-width: 700px) {
+  .small-screen {
+    display: none;
+  }
+  
+  .App {
+    display: flex;
+  }
 }

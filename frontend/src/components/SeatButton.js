@@ -3,10 +3,12 @@ import "./SeatButton.css";
 function SeatButton(props) {
   const turnVar = 1 / props.numStudents;
 
-  const seatClick = (event) => {
+  const seatClick = (_event) => {
     props.setSelected([...props.selected, props.index.toString()]);
   };
 
+  // this part is where we did linear regression over what
+  // looked nice to find the div width
   const width = 240 - 9.5 * props.numStudents;
 
   const styles = {
