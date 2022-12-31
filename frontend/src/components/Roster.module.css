@@ -5,10 +5,22 @@
     margin: 10px;
     border: 1px solid #D3D5D4;
     border-radius: 5px;
+    cursor: grab;
+
 }  
 
 .roster {
     position: absolute;
     left: 5%;
     top: 10%;
-  }
+}
+
+.classList {
+    border: 1px solid #D3D5D4;
+    border-radius: 5px;
+    padding: 30px;
+}
+.header{
+    color: #D3D5D4;
+    font-size: 20px;
+}

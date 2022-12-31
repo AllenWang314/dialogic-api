@@ -17,15 +17,20 @@ const SeatName = (props) => {
   }
 
   function drag(ev) {
-    // ev.dataTransfer.setData("targetid", ev.target.id);
+    ev.dataTransfer.setData("studentID", props.student.id);
     ev.dataTransfer.setData("index", props.index);
   }
 
   function drop(ev) {
     ev.preventDefault();
-    const data = ev.dataTransfer.getData("text");
-    props.onAssign(data);
-    console.log("assigning", data);
+    const studentID = ev.dataTransfer.getData("studentID");
+    const seatIndex = ev.dataTransfer.getData("index");
+    // console.log(studentID, "||", seatIndex);
+
+    props.onAssign(studentID);
+    props.onRemove(seatIndex);
+
+    // console.log("assigning", data);
     // props.document.getElementById(data).cloneNode(true);
   }
   // this part is where we did linear regression over what
@@ -35,7 +40,7 @@ const SeatName = (props) => {
   // the bottom names are flipped
   const flipName = props.index > props.numStudents / 4 && props.index < (props.numStudents * 3) / 4;
   const flipTransform = flipName ? "scaleY(-1) scaleX(-1)" : "";
-
+  const cursorStyle = props.student?.name ? "grab" : "default";
   // programatically inject styles
   const styles = {
     transform:
@@ -43,6 +48,7 @@ const SeatName = (props) => {
         turnVar * props.index
       }turn) translateY(${-300}px)` + flipTransform,
     width: `${width}px`,
+    cursor: cursorStyle,
   };
 
   return (

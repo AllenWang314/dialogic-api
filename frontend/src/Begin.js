@@ -44,8 +44,10 @@ const Begin = () => {
   };
 
   const unassignSeat = (ind) => {
-    seats.splice(ind, 1, { student: null });
-    setSeats([...seats]);
+    if (ind) {
+      seats.splice(ind, 1, { student: null });
+      setSeats([...seats]);
+    }
   };
 
   // programatically generate seat graphic
@@ -99,13 +101,14 @@ const Begin = () => {
           onAssign={(student_id) => {
             assignSeat(student_id, ind);
           }}
+          onRemove={unassignSeat}
         />
       );
     });
   };
   return (
     <div className={styles["begin"]}>
-      <Roster onRemove={unassignSeat} students={STUDENTS_AVERAGE} />
+      <Roster onRemove={unassignSeat} students={STUDENTS_AVERAGE} seats={seats} />
       <div className={styles["circle"]}>
         {generateSeats(seats.map((student) => student.student))}
         {generateInnerButtons(seats)}

@@ -5,7 +5,7 @@ function SeatButton(props) {
   const turnVar = 1 / props.numStudents;
 
   const seatClick = (_event) => {
-    props.onClick()
+    props.onClick();
   };
 
   // this part is where we did linear regression over what
@@ -20,11 +20,15 @@ function SeatButton(props) {
   const styles = {
     transform: `translate(${300 - width / 2}px) translateY(${300 - 10}px) rotate(${
       turnVar * props.index
-    }turn) translateY(${-250}px)`,
+    }turn) translateY(${-260}px)`,
     width: `${width}px`,
   };
 
-  return <div id={props.index} className={cssstyles["seat-button"]} onClick={seatClick} style={styles}><AiOutlineClose/></div>;
+  return (
+    <div id={props.index} className={cssstyles["seat-button"]} onClick={seatClick} style={styles}>
+      <AiOutlineClose />
+    </div>
+  );
 }
 
 export default SeatButton;

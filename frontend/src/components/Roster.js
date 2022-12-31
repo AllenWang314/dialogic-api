@@ -5,22 +5,18 @@ const RosterStudent = (props) => {
     const words = name.split(" ");
     return words[0] + " " + words[words.length - 1][0] + ".";
   };
-  function allowDrop(ev) {
-    ev.preventDefault();
-  }
 
   function drag(ev) {
-    ev.dataTransfer.setData("text", ev.target.id);
+    ev.dataTransfer.setData("studentID", ev.target.id);
   }
 
   return (
     <div
       className={styles["rosterName"]}
-      draggable="true"
-      onDragOver={allowDrop}
+      draggable={!props.assigned}
       onDragStart={drag}
       id={props.student.id}
-      on
+      style={props.assigned ? { opacity: 0.6, cursor: "not-allowed" } : {}}
     >
       {getName(props.student.name)}
     </div>
@@ -33,11 +29,24 @@ const Roster = (props) => {
     const data = ev.dataTransfer.getData("index");
     props.onRemove(data);
   }
+  function allowDrop(ev) {
+    ev.preventDefault();
+  }
   return (
-    <div onDrop={drop} className={styles["roster"]}>
-      {props.students.map((obj, ind) => {
-        return <RosterStudent key={ind} index={ind} student={obj} />;
-      })}
+    <div className={styles["roster"]}>
+      <div className={styles["header"]}>Students</div>
+      <div onDrop={drop} onDragOver={allowDrop} className={styles["classList"]}>
+        {props.students.map((obj, ind) => {
+          return (
+            <RosterStudent
+              key={ind}
+              index={ind}
+              student={obj}
+              assigned={props.seats.some((student) => student?.student?.id == obj.id)}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 };

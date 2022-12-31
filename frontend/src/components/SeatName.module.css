@@ -16,10 +16,10 @@
 }
 
 
-.seatname-button:hover{
-    cursor: pointer; 
+/* .seatname-button:hover{
+    cursor: grab; 
     border: 1px solid white;
-}
+} */
 
 
 .name {
