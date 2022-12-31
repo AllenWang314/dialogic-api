@@ -15,12 +15,24 @@ STUDENT ARRAY attributes ?
 */
 const Begin = () => {
   const DEFAULT_COUNT = 13
-  const DEFAULT_STATE = [{student: "student"}] 
+  const DEFAULT_STATE = [{student: {name: "Josh0"}}, {student: {name: "Josh1"}}, {student: {name: "Josh2"}}, {student: {name: "Josh3"}}, {student: {name: "Josh4"}}, {student: {name: "Josh5"}}, {student: {name: "Josh6"}}, {student: {name: "Josh7"}}, {student: {name: "Josh8"}}, {student: {name: "Josh9"}}, {student: {name: "Josh10"}}, {student: {name: "Josh11"}}] 
   console.log(DEFAULT_STATE)
   const [students, setStudents] = useState(DEFAULT_STATE);
+  const [studentData, setStudentData] = useState({}); // map student id to student data from API
+
 
   const addSeat = (ind) => {
-    console.log(ind)
+    // adds a seat in students after index ind
+    // note that 0th index always rendered at center top of page
+    students.splice(ind + 1, 0, {student: null})
+    setStudents([...students])
+  }
+
+  const deleteSeat = (ind) => {
+    // deletes seat at index ind
+    // note that 0th index always rendered at center top of page
+    students.splice(ind, 1)
+    setStudents([...students])
   }
 
   // programatically generate seat graphic
@@ -54,8 +66,7 @@ const Begin = () => {
           index={ind}
           student={obj}
           numStudents={students.length}
- 
-          deleteMode={true}
+          onClick={() => {deleteSeat(ind)}}
         />
       );
     });
