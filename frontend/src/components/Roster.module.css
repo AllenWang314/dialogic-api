@@ -1,0 +1,14 @@
+.rosterName{
+    color: #D3D5D4;
+    height: 18px;
+    padding: 5px;
+    margin: 10px;
+    border: 1px solid #D3D5D4;
+    border-radius: 5px;
+}  
+
+.roster {
+    position: absolute;
+    left: 5%;
+    top: 10%;
+  }

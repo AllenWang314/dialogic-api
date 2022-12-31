@@ -4,36 +4,49 @@ import Modal from "./components/Modal";
 import DeleteButton from "./components/DeleteButton";
 import { useState, useEffect } from "react";
 import AddButton from "./components/AddButton";
+import SeatName from "./components/SeatName";
+import Roster from "./components/Roster";
+import { STUDENTS_FEW, STUDENTS_AVERAGE, STUDENTS_MORE, ANNOTATIONS } from "./constants.js";
 
-/*
-STUDENT ARRAY attributes ?
-  [index]: location on the circle
-  student: {student information}
-  annotations: {specific information}
-  discussion: {other discussion scoped information specific to student}
-  freeze: boolean (seat)
-*/
 const Begin = () => {
-  const DEFAULT_COUNT = 13
-  const DEFAULT_STATE = [{student: {name: "Josh0"}}, {student: {name: "Josh1"}}, {student: {name: "Josh2"}}, {student: {name: "Josh3"}}, {student: {name: "Josh4"}}, {student: {name: "Josh5"}}, {student: {name: "Josh6"}}, {student: {name: "Josh7"}}, {student: {name: "Josh8"}}, {student: {name: "Josh9"}}, {student: {name: "Josh10"}}, {student: {name: "Josh11"}}] 
-  console.log(DEFAULT_STATE)
-  const [students, setStudents] = useState(DEFAULT_STATE);
-  const [studentData, setStudentData] = useState({}); // map student id to student data from API
-
+  const DEFAULT_COUNT = 13;
+  const DEFAULT_STATE = [
+    { student: null },
+    { student: null },
+    { student: null },
+    { student: null },
+    { student: null },
+    { student: null },
+    { student: null },
+    { student: null },
+    { student: null },
+  ];
+  const [seats, setSeats] = useState(DEFAULT_STATE); // list of student ids
+  const [students, setStudents] = useState(STUDENTS_AVERAGE); // map student id to student data from API
 
   const addSeat = (ind) => {
     // adds a seat in students after index ind
     // note that 0th index always rendered at center top of page
-    students.splice(ind + 1, 0, {student: null})
-    setStudents([...students])
-  }
+    seats.splice(ind + 1, 0, { student: null });
+    setSeats([...seats]);
+  };
 
   const deleteSeat = (ind) => {
     // deletes seat at index ind
     // note that 0th index always rendered at center top of page
-    students.splice(ind, 1)
-    setStudents([...students])
-  }
+    seats.splice(ind, 1);
+    setSeats([...seats]);
+  };
+
+  const assignSeat = (student_id, ind) => {
+    seats.splice(ind, 1, { student: students.find((student) => student.id == student_id) });
+    setSeats([...seats]);
+  };
+
+  const unassignSeat = (ind) => {
+    seats.splice(ind, 1, { student: null });
+    setSeats([...seats]);
+  };
 
   // programatically generate seat graphic
   const generateSeats = (students) => {
@@ -51,7 +64,9 @@ const Begin = () => {
           index={ind}
           student={obj}
           numStudents={students.length}
-          onClick={() => {addSeat(ind)}}
+          onClick={() => {
+            addSeat(ind);
+          }}
         />
       );
     });
@@ -66,18 +81,36 @@ const Begin = () => {
           index={ind}
           student={obj}
           numStudents={students.length}
-          onClick={() => {deleteSeat(ind)}}
+          onClick={() => {
+            deleteSeat(ind);
+          }}
         />
       );
     });
   };
-
+  const generateOuterButtons = (students) => {
+    return students.map((obj, ind) => {
+      return (
+        <SeatName
+          key={ind}
+          index={ind}
+          student={obj}
+          numStudents={students.length}
+          onAssign={(student_id) => {
+            assignSeat(student_id, ind);
+          }}
+        />
+      );
+    });
+  };
   return (
     <div className={styles["begin"]}>
+      <Roster onRemove={unassignSeat} students={STUDENTS_AVERAGE} />
       <div className={styles["circle"]}>
-        {generateSeats(students.map(student => student.student))}
-        {generateInnerButtons(students)}
-        {generatePlusButtons(students)}
+        {generateSeats(seats.map((student) => student.student))}
+        {generateInnerButtons(seats)}
+        {generatePlusButtons(seats)}
+        {generateOuterButtons(seats.map((student) => student.student))}
       </div>
     </div>
   );

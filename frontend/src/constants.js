@@ -3,165 +3,165 @@
 export const STUDENTS_FEW = [
   {
     name: "Jash M",
-    student_id: 1,
+    id: 1,
   },
   {
     name: "Lies L",
-    student_id: 2,
+    id: 2,
   },
   {
     name: "Shreyl S",
-    student_id: 3,
+    id: 3,
   },
   {
     name: "Broke L",
-    student_id: 4,
+    id: 4,
   },
   {
     name: "Josh M",
-    student_id: 5,
+    id: 5,
   },
   {
     name: "Jamin T",
-    student_id: 6,
+    id: 6,
   },
 ];
 
 export const STUDENTS_AVERAGE = [
   {
     name: "Jash M",
-    student_id: 1,
+    id: 1,
   },
   {
     name: "Lies L",
-    student_id: 2,
+    id: 2,
   },
   {
     name: "Shreyl S",
-    student_id: 3,
+    id: 3,
   },
   {
     name: "Broke L",
-    student_id: 4,
+    id: 4,
   },
   {
     name: "Josh M",
-    student_id: 5,
+    id: 5,
   },
   {
     name: "Jamin T",
-    student_id: 6,
+    id: 6,
   },
   {
     name: "Jann Q",
-    student_id: 7,
+    id: 7,
   },
   {
     name: "Wald W",
-    student_id: 8,
+    id: 8,
   },
   {
     name: "Maddi N",
-    student_id: 9,
+    id: 9,
   },
   {
     name: "Cindoo Q",
-    student_id: 10,
+    id: 10,
   },
   {
     name: "David M",
-    student_id: 11,
+    id: 11,
   },
   {
     name: "Joey E",
-    student_id: 12,
+    id: 12,
   },
   {
     name: "Step C",
-    student_id: 13,
+    id: 13,
   },
 ];
 
 export const STUDENTS_MORE = [
   {
     name: "Jash M",
-    student_id: 1,
+    id: 1,
   },
   {
     name: "Lies L",
-    student_id: 2,
+    id: 2,
   },
   {
     name: "Shreyl S",
-    student_id: 3,
+    id: 3,
   },
   {
     name: "Broke L",
-    student_id: 4,
+    id: 4,
   },
   {
     name: "Josh M",
-    student_id: 5,
+    id: 5,
   },
   {
     name: "Jamin T",
-    student_id: 6,
+    id: 6,
   },
   {
     name: "Jann Q",
-    student_id: 7,
+    id: 7,
   },
   {
     name: "Wald W",
-    student_id: 8,
+    id: 8,
   },
   {
     name: "Maddi N",
-    student_id: 9,
+    id: 9,
   },
   {
     name: "Cindoo Q",
-    student_id: 10,
+    id: 10,
   },
   {
     name: "David M",
-    student_id: 11,
+    id: 11,
   },
   {
     name: "Joey E",
-    student_id: 12,
+    id: 12,
   },
   {
     name: "Step C",
-    student_id: 13,
+    id: 13,
   },
   {
     name: "Jann Q",
-    student_id: 14,
+    id: 14,
   },
   {
     name: "Wald W",
-    student_id: 15,
+    id: 15,
   },
   {
     name: "Maddi N",
-    student_id: 16,
+    id: 16,
   },
   {
     name: "Cindoo Q",
-    student_id: 17,
+    id: 17,
   },
   {
     name: "David M",
-    student_id: 18,
+    id: 18,
   },
   {
     name: "Joey E",
-    student_id: 19,
+    id: 19,
   },
   {
     name: "Step C",
-    student_id: 20,
+    id: 20,
   },
 ];
 

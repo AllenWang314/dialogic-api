@@ -24,7 +24,11 @@ function SeatButton(props) {
     width: `${width}px`,
   };
 
-  return <div id={props.index} className="seat-button" onClick={seatClick} style={styles}>{props.deleteMode && <AiOutlineClose/>}</div>;
+  return (
+    <div id={props.index} className="seat-button" onClick={seatClick} style={styles}>
+      {props.deleteMode && <AiOutlineClose />}
+    </div>
+  );
 }
 
 export default SeatButton;

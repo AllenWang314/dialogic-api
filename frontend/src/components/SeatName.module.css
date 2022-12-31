@@ -1,17 +1,28 @@
+
 .seatname-button {
     grid-area: layer;
     display: flex;
     grid-template-areas: "layer";
-    height: 60px;
+    height: 30px;
     justify-content: center;
+    align-items: center;
     position: relative;
     z-index:10;
     flex-direction: row;
     gap: 3px;
+    border: 1px solid white;
+    border-radius: 5px;
 
- }
+}
+
 
 .seatname-button:hover{
-   cursor: pointer; 
-   border: 1px solid white;
+    cursor: pointer; 
+    border: 1px solid white;
+}
+
+
+.name {
+    color: #D3D5D4;
+    height: 18px;
 }

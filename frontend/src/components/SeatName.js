@@ -1,16 +1,11 @@
-import styles from "./Begin.module.css";
-import { useState, useEffect } from "react";
+import cssstyles from "./SeatName.module.css";
 
-const SeatNameButton = (props) => {
+const SeatName = (props) => {
   const turnVar = 1 / props.numStudents;
 
-  const seatClick = (_event) => {
-    props.outerButtonClick(props.student);
-  };
-  const [name, setName] = useState();
-
-  const getName = (name) => {
-    if (name) {
+  const getName = (student) => {
+    if (student && student.name) {
+      const name = student.name;
       const words = name.split(" ");
       return words[0] + " " + words[words.length - 1][0] + ".";
     }
@@ -22,48 +17,46 @@ const SeatNameButton = (props) => {
   }
 
   function drag(ev) {
-    ev.dataTransfer.setData("text", ev.target.id);
+    // ev.dataTransfer.setData("targetid", ev.target.id);
+    ev.dataTransfer.setData("index", props.index);
   }
 
   function drop(ev) {
     ev.preventDefault();
-    var data = ev.dataTransfer.getData("text");
-    console.log(data);
-    setName(data);
-    document.getElementById(data).cloneNode(true);
+    const data = ev.dataTransfer.getData("text");
+    props.onAssign(data);
+    console.log("assigning", data);
+    // props.document.getElementById(data).cloneNode(true);
   }
   // this part is where we did linear regression over what
   // looked nice to find the div width
-  const width = 240 - 9 * props.numStudents;
+  const width = 200 - 9 * props.numStudents;
 
   // the bottom names are flipped
   const flipName = props.index > props.numStudents / 4 && props.index < (props.numStudents * 3) / 4;
   const flipTransform = flipName ? "scaleY(-1) scaleX(-1)" : "";
-  const flipAlignItems = flipName ? "flex-end" : "flex-start";
 
   // programatically inject styles
-  const styles1 = {
+  const styles = {
     transform:
-      `translate(${300 - width / 2}px) translateY(${300 - 25}px) rotate(${
+      `translate(${300 - width / 2}px) translateY(${300 - 10}px) rotate(${
         turnVar * props.index
       }turn) translateY(${-300}px)` + flipTransform,
     width: `${width}px`,
-    alignItems: flipAlignItems,
   };
 
   return (
     <div
-      className={styles["seatname-button"]}
-      onClick={seatClick}
-      style={styles1}
+      className={cssstyles["seatname-button"]}
+      style={styles}
       draggable="true"
       onDragOver={allowDrop}
-      onDrop={drop}
       onDragStart={drag}
+      onDrop={drop}
     >
-      <div> {getName(name)}</div>
+      <div className={cssstyles["name"]}> {getName(props.student)}</div>
     </div>
   );
 };
 
-export default SeatNameButton;
+export default SeatName;
