@@ -1,6 +1,7 @@
 import "./Home.css";
 import Seat from "./components/Seat";
 import OuterButton from "./components/OuterButton";
+import SeatNameButton from "./components/SeatNameButton";
 import Modal from "./components/Modal";
 import SeatButton from "./components/SeatButton";
 import { useState, useEffect } from "react";
@@ -40,7 +41,7 @@ const Home = () => {
   const generateOuterButtons = (students) => {
     return students.map((obj, ind) => {
       return (
-        <OuterButton
+        <SeatNameButton
           key={ind}
           index={ind}
           student={obj}
@@ -54,19 +55,6 @@ const Home = () => {
     });
   };
 
-    // programatically generate outer buttons
-    const generatePlusButtons = (students) => {
-      return students.map((obj, ind) => {
-        return (
-          <AddButton
-            key={ind}
-            index={ind}
-            student={obj}
-            numStudents={students.length}
-          />
-        );
-      });
-    };
 
   // programatically generate inner buttons
   const generateInnerButtons = (students) => {
@@ -105,6 +93,8 @@ const Home = () => {
 
   return (
     <div id="home">
+      <div className="roster"> {Roster(students)}</div>
+
       <div className="circle">
         {generateOuterButtons(students)}
         {generateSeats(students)}
@@ -139,7 +129,9 @@ const Home = () => {
           }}
         >
           <option value="few">few</option>
-          <option value="average" selected="selected">average</option>
+          <option value="average" selected="selected">
+            average
+          </option>
           <option value="more">more</option>
         </select>
       </div>
