@@ -1,0 +1,9 @@
+.add-button {
+  grid-area: layer;
+  height: 30px;
+  border-radius: 30px;
+}
+
+.add-button:hover {
+  cursor: pointer;
+}

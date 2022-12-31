@@ -1,16 +1,16 @@
-import "./SeatButton.css";
-import { AiOutlineClose } from "react-icons/ai";
+import cssstyles from "./AddButton.module.css";
+import { AiOutlinePlus } from "react-icons/ai"
 
-function SeatButton(props) {
+function AddButton(props) {
   const turnVar = 1 / props.numStudents;
 
-  const seatClick = (_event) => {
-    props.setSelected([...props.selected, props.index.toString()]);
+  const onClick = (_event) => {
+    props.onClick()
   };
 
   // this part is where we did linear regression over what
   // looked nice to find the div width
-  const width = 240 - 9.5 * props.numStudents;
+  const width = 30;
 
   // 1. translate horizontally to center, we adjust by width/2 to center
   // 2. translate vertically to center in circle
@@ -19,12 +19,18 @@ function SeatButton(props) {
   // 5. (optional) flip the div if it's at the bottom
   const styles = {
     transform: `translate(${300 - width / 2}px) translateY(${300 - 10}px) rotate(${
-      turnVar * props.index
-    }turn) translateY(${-250}px)`,
+      turnVar * (props.index + 0.5)
+    }turn) translateY(${-230}px)`,
     width: `${width}px`,
+    color: `white`,
+    display: `flex`,
+    flexDirection: `column`,
+    alignItems: `center`,
+    justifyContent: `center`,
+    fontSize: `20px`,
   };
 
-  return <div id={props.index} className="seat-button" onClick={seatClick} style={styles}>{props.deleteMode && <AiOutlineClose/>}</div>;
+  return <div id={props.index} className={cssstyles["add-button"]} onClick={onClick} style={styles}><AiOutlinePlus /></div>;
 }
 
-export default SeatButton;
+export default AddButton;

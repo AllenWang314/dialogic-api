@@ -1,0 +1,16 @@
+.begin {
+  height: 600px;
+  width: 600px;
+  margin: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.circle {
+  display: grid;
+  grid-template-areas: "layer";
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+}

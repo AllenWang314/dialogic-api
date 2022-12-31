@@ -6,6 +6,7 @@ import SeatButton from "./components/SeatButton";
 import { useState, useEffect } from "react";
 import Xarrow from "react-xarrows";
 import { STUDENTS_FEW, STUDENTS_AVERAGE, STUDENTS_MORE, ANNOTATIONS } from "./constants.js";
+import AddButton from "./components/AddButton";
 
 const Home = () => {
   const [annotationModalStudent, setAnnotationModalStudent] = useState(null);
@@ -53,6 +54,20 @@ const Home = () => {
     });
   };
 
+    // programatically generate outer buttons
+    const generatePlusButtons = (students) => {
+      return students.map((obj, ind) => {
+        return (
+          <AddButton
+            key={ind}
+            index={ind}
+            student={obj}
+            numStudents={students.length}
+          />
+        );
+      });
+    };
+
   // programatically generate inner buttons
   const generateInnerButtons = (students) => {
     return students.map((obj, ind) => {
@@ -64,6 +79,7 @@ const Home = () => {
           numStudents={students.length}
           selected={selected}
           setSelected={setSelected}
+          deleteMode={true}
         />
       );
     });
@@ -94,6 +110,7 @@ const Home = () => {
         {generateSeats(students)}
         {generateInnerButtons(students)}
         {generateLines()}
+        {generatePlusButtons(students)}
       </div>
       <Modal
         student={annotationModalStudent}
