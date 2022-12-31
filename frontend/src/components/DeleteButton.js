@@ -1,4 +1,4 @@
-import "./SeatButton.css";
+import cssstyles from "./DeleteButton.module.css";
 import { AiOutlineClose } from "react-icons/ai";
 
 function SeatButton(props) {
@@ -24,7 +24,7 @@ function SeatButton(props) {
     width: `${width}px`,
   };
 
-  return <div id={props.index} className="seat-button" onClick={seatClick} style={styles}>{props.deleteMode && <AiOutlineClose/>}</div>;
+  return <div id={props.index} className={cssstyles["seat-button"]} onClick={seatClick} style={styles}>{props.deleteMode && <AiOutlineClose/>}</div>;
 }
 
 export default SeatButton;
