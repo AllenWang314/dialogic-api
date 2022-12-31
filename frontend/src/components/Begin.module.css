@@ -1,16 +1,17 @@
-.outer-button {
+.seatname-button {
     grid-area: layer;
     display: flex;
     grid-template-areas: "layer";
     height: 60px;
     justify-content: center;
     position: relative;
-    z-index:-1; /* hiding annotations for now*/
+    z-index:10;
     flex-direction: row;
     gap: 3px;
 
  }
 
-.outer-button:hover{
+.seatname-button:hover{
    cursor: pointer; 
+   border: 1px solid white;
 }

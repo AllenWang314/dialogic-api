@@ -101,3 +101,7 @@ input:checked + .slider:before {
     font-size: 15px;
     color: #183A37;
 }
+
+.roster{
+  float: left;
+}
