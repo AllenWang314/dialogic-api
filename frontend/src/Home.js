@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import Xarrow from "react-xarrows";
 import { STUDENTS_FEW, STUDENTS_AVERAGE, STUDENTS_MORE, ANNOTATIONS } from "./constants.js";
 import AddButton from "./components/AddButton";
-import Roster from "./components/Roster";
+
 const Home = () => {
   const [annotationModalStudent, setAnnotationModalStudent] = useState(null);
   const [showAnnotations, setShowAnnotations] = useState(true);
@@ -55,12 +55,6 @@ const Home = () => {
     });
   };
 
-  // programatically generate outer buttons
-  const generatePlusButtons = (students) => {
-    return students.map((obj, ind) => {
-      return <AddButton key={ind} index={ind} student={obj} numStudents={students.length} />;
-    });
-  };
 
   // programatically generate inner buttons
   const generateInnerButtons = (students) => {

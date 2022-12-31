@@ -3,6 +3,7 @@ import cssstyles from "./Seat.module.css";
 const Seat = (props) => {
   // get Name and last initial from full name
 
+
   // STROKE_FRACTION is a magic number we picked that
   // made the UI look nice
   const turnVar = 1 / props.numStudents;
@@ -16,6 +17,7 @@ const Seat = (props) => {
   // then we rotate them to the correct place on the circle
   return (
     <div className={cssstyles["seat"]} style={styles}>
+
       <svg viewBox="0 0 1000 1000">
         <circle
           r="450"

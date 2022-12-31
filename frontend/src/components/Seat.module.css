@@ -8,14 +8,9 @@
     height: 600px;
     padding-top: 10px;
 }
-svg{
-    position: relative;
 
-    z-index: -1;
-}
+
 .name {
     color: #D3D5D4;
-    z-index: 200;
-    min-width: 40px;
-    min-height: 20px;
+    height: 18px;
 }
