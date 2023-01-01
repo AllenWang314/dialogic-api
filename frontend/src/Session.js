@@ -16,7 +16,7 @@ import RosterApi from "./api/Roster";
 import SessionApi from "./api/Session";
 import Arrows from "./components/Arrows";
 
-const DEFAULT_COUNT = 13;
+const DEFAULT_COUNT = 8;
 
 const Session = () => {
   let { sessionId } = useParams();
@@ -28,13 +28,14 @@ const Session = () => {
   const [roster, setRoster] = useState(null);
   const [students, setStudents] = useState(null);
   const [discussionState, setDiscussionState] = useState(false); // map student id to student data from API
-  const [selected, setSelected] = useState([]);
+  const [selected, setSelected] = useState(null);
   const [edges, setEdges] = useState([]);
 
   useEffect(() => {
     SessionApi.getSession(sessionId).then((res) => {
       setSession(res.data);
       setDiscussionState(res.data.start_time > 0);
+      setEdges(res.data.graph);
     });
   }, []);
 
@@ -88,8 +89,11 @@ const Session = () => {
 
   const undoEdge = () => {
     edges.pop();
-    setEdges(edges);
-    setSelected([]);
+    if (edges.length === 1) {
+      edges.pop();
+    }
+    setEdges([...edges]);
+    setSelected(null);
   };
 
   // modal listener outer button
@@ -99,11 +103,18 @@ const Session = () => {
 
   // listener for drawing lines
   useEffect(() => {
-    if (selected.length === 2) {
+    if (selected) {
       setEdges([...edges, selected]);
-      setSelected([]);
     }
-  }, [selected, edges]);
+  }, [selected]);
+
+  useEffect(() => {
+    if (edges.length > 1) {
+      SessionApi.updateSession(sessionId, {
+        graph: edges,
+      });
+    }
+  }, [edges]);
 
   const addSeat = (ind) => {
     // adds a seat in students after index ind
@@ -204,7 +215,7 @@ const Session = () => {
               <div className={styles["circle"]}>
                 <Seats
                   seats={seats}
-                  selected={selected[0]}
+                  selected={selected}
                   discussionState={discussionState}
                 />
                 <SeatButtons
@@ -216,7 +227,7 @@ const Session = () => {
                 />
                 {displayAddButtons() && generatePlusButtons(seats)}
                 {generateOuterButtons(seats)}
-                <Arrows seats={seats} edges={edges} />
+                {discussionState && <Arrows seats={seats} edges={edges} />}
               </div>
               <Modal
                 student={annotationModalStudent}
@@ -251,6 +262,21 @@ const Session = () => {
                   onClick={() => undoEdge()}
                 >
                   undo
+                </button>
+              )}
+
+              {discussionState && (
+                <button
+                  style={{
+                    position: "absolute",
+                    height: "50px",
+                    width: "100px",
+                    bottom: "10%",
+                    right: "10%",
+                  }}
+                  onClick={() => setDiscussionState(false)}
+                >
+                  adjust
                 </button>
               )}
             </div>
