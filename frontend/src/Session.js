@@ -16,9 +16,7 @@ import Modal from "./components/Modal";
 const DEFAULT_COUNT = 8;
 
 const Session = () => {
-  const [seats, setSeats] = useState(
-    Array(DEFAULT_COUNT).fill({ student: null })
-  ); // list of student ids
+  const [seats, setSeats] = useState(Array(DEFAULT_COUNT).fill(null)); // list of student ids
   const [annotationModalStudent, setAnnotationModalStudent] = useState(null);
   const [showAnnotations, setShowAnnotations] = useState(true);
   const [annotationMap, setAnnotationMap] = useState(ANNOTATIONS);
@@ -47,9 +45,7 @@ const Session = () => {
   };
 
   const getFilledSeats = () => {
-    return seats.filter(function (el) {
-      return el.student != null;
-    });
+    return seats.filter(Boolean);
   };
   const displayAddButtons = () => {
     return !discussionState && seats.length < 20;
@@ -58,7 +54,6 @@ const Session = () => {
     return !discussionState && seats.length > 2;
   };
   const displayBeginButton = () => {
-    console.log(getFilledSeats().length);
     return !discussionState && getFilledSeats().length > 1;
   };
   // modal listener outer button
@@ -85,7 +80,7 @@ const Session = () => {
     // adds a seat in students after index ind
     // note that 0th index always rendered at center top of page
     if (displayAddButtons()) {
-      seats.splice(ind + 1, 0, { student: null });
+      seats.splice(ind + 1, 0, null);
       setSeats([...seats]);
     }
   };
@@ -100,15 +95,17 @@ const Session = () => {
   };
 
   const assignSeat = (student_id, ind) => {
-    seats.splice(ind, 1, {
-      student: students.find((student) => student.id == student_id),
-    });
+    seats.splice(
+      ind,
+      1,
+      students.find((student) => student.id == student_id)
+    );
     setSeats([...seats]);
   };
 
   const unassignSeat = (ind) => {
     if (ind) {
-      seats.splice(ind, 1, { student: null });
+      seats.splice(ind, 1, null);
       setSeats([...seats]);
     }
   };
@@ -211,12 +208,15 @@ const Session = () => {
 
       const mid_x = (x1 + x2) / 2;
       const mid_y = (y1 + y2) / 2;
+      const seatIndex1 = seats.findIndex((student) => student.id == line[0]);
+      const seatIndex2 = seats.findIndex((student) => student.id == line[1]);
+      console.log(seatIndex1, seatIndex2);
 
       return (
         <CurvedArrow
           key={ind}
-          fromSelector={`[id='${line[0]}']`}
-          toSelector={`[id='${line[1]}']`}
+          fromSelector={`[id='${seatIndex1}']`}
+          toSelector={`[id='${seatIndex2}']`}
           color={"#9DB5B2"}
           width={2}
           size={15}
@@ -242,10 +242,10 @@ const Session = () => {
               />
             )}
             <div className={styles["circle"]}>
-              {generateSeats(seats.map((student) => student.student))}
+              {generateSeats(seats)}
               {generateInnerButtons(seats)}
               {displayAddButtons() && generatePlusButtons(seats)}
-              {generateOuterButtons(seats.map((student) => student.student))}
+              {generateOuterButtons(seats)}
               {generateLines()}
             </div>
             <Modal

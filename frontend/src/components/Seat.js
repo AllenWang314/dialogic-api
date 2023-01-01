@@ -14,7 +14,10 @@ const Seat = (props) => {
   // made the UI look nice
   const turnVar = 1 / props.numStudents;
   const STROKE_FRACTION = 0.7;
-
+  const STROKE_COLOR =
+    props.showName && props.selected[0] == props.student?.id
+      ? "#FFFFFF"
+      : "#D3D5D4";
   const styles = {
     transform: `rotate(${turnVar * props.index}turn)`,
   };
@@ -36,7 +39,7 @@ const Seat = (props) => {
           cx="500"
           cy="500"
           fillOpacity="0"
-          stroke="#D3D5D4"
+          stroke={STROKE_COLOR}
           strokeWidth="30"
           pathLength="1"
           strokeDashoffset={`${

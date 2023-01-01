@@ -42,7 +42,7 @@ const Roster = (props) => {
               key={ind}
               index={ind}
               student={obj}
-              assigned={props.seats.some((student) => student?.student?.id == obj.id)}
+              assigned={props.seats.some((student) => student?.id == obj.id)}
             />
           );
         })}

@@ -1,4 +1,4 @@
-import cssstyles from "./SeatName.module.css";
+import cssstyles from "./SeatNameButton.module.css";
 
 const SeatNameButton = (props) => {
   const turnVar = 1 / props.numStudents;

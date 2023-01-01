@@ -3,19 +3,23 @@ import { AiOutlineClose } from "react-icons/ai";
 
 function SeatButton(props) {
   const turnVar = 1 / props.numStudents;
-
   const seatClick = (_event) => {
     if (props.deleteMode) {
       props.onDelete();
     } else {
-      props.setSelected([...props.selected, props.index.toString()]);
+      console.log(props.student);
+
+      props.setSelected([...props.selected, props.student.id]);
     }
   };
 
   // this part is where we did linear regression over what
   // looked nice to find the div width
-  const width = 240 - 9 * props.numStudents;
-
+  const width =
+    395 -
+    33.5 * props.numStudents +
+    0.82 * props.numStudents * props.numStudents;
+  console.log(width, props.numStudents);
   // 1. translate horizontally to center, we adjust by width/2 to center
   // 2. translate vertically to center in circle
   // 3. rotate so that each div (dynamically) is facing the right direction
@@ -26,7 +30,8 @@ function SeatButton(props) {
       300 - 10
     }px) rotate(${turnVar * props.index}turn) translateY(${-257}px)`,
     width: `${width}px`,
-    border: props.selected[0] == props.index ? "1px solid white" : "",
+    // border: props.selected[0] == props.index ? "1px solid white" : "",
+    // height: props.numStudents > 5 ? "30px" : "50px",
   };
 
   return (
