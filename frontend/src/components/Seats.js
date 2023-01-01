@@ -11,7 +11,6 @@ const Seat = (props) => {
     }
     return "";
   };
-  console.log(props.selected, props.student);
   // STROKE_FRACTION is a magic number we picked that
   // made the UI look nice
   const turnVar = 1 / props.numStudents;

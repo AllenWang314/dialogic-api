@@ -8,7 +8,7 @@ function SeatButton(props) {
     if (props.deleteMode) {
       props.onDelete();
     } else {
-      props.setSelected([...props.selected, props.student.id]);
+      props.setSelected(props.student.id);
     }
   };
 
@@ -28,7 +28,6 @@ function SeatButton(props) {
       300 - 10
     }px) rotate(${turnVar * props.index}turn) translateY(${-257}px)`,
     width: `${width}px`,
-    // border: props.selected[0] == props.index ? "1px solid white" : "",
     // height: props.numStudents > 5 ? "30px" : "50px",
   };
 
@@ -58,7 +57,7 @@ const SeatButtons = (props) => {
         event.shiftKey
       );
       if (isNotCombinedKey) {
-        props.setSelected([]);
+        props.setSelected(null);
       }
     }
   });

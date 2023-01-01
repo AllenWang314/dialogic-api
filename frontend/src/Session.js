@@ -18,7 +18,7 @@ import SessionApi from "./api/Session";
 import Arrows from "./components/Arrows";
 import { FaPlayCircle, FaStopCircle, FaUndo, FaRegEdit } from "react-icons/fa";
 
-const DEFAULT_COUNT = 13;
+const DEFAULT_COUNT = 8;
 
 const Session = () => {
   let { sessionId } = useParams();
@@ -31,7 +31,7 @@ const Session = () => {
   const [students, setStudents] = useState(null);
   const [secondsElapsed, setSecondsElapsed] = useState(0);
   const [discussionState, setDiscussionState] = useState(false); // map student id to student data from API
-  const [selected, setSelected] = useState([]);
+  const [selected, setSelected] = useState(null);
   const [edges, setEdges] = useState([]);
 
   useEffect(() => {
@@ -42,6 +42,7 @@ const Session = () => {
       if (res.data.start_time > 0) {
         setDiscussionState(true);
         setSecondsElapsed(Math.round((Date.now() - res.data.start_time * 1000) / 1000));
+        setEdges(res.data.graph);
       }
     });
   }, []);
@@ -120,8 +121,11 @@ const Session = () => {
 
   const undoEdge = () => {
     edges.pop();
-    setEdges(edges);
-    setSelected([]);
+    if (edges.length === 1) {
+      edges.pop();
+    }
+    setEdges([...edges]);
+    setSelected(null);
   };
 
   // modal listener outer button
@@ -131,11 +135,18 @@ const Session = () => {
 
   // listener for drawing lines
   useEffect(() => {
-    if (selected.length === 2) {
+    if (selected) {
       setEdges([...edges, selected]);
-      setSelected([]);
     }
-  }, [selected, edges]);
+  }, [selected]);
+
+  useEffect(() => {
+    if (edges.length > 1) {
+      SessionApi.updateSession(sessionId, {
+        graph: edges,
+      });
+    }
+  }, [edges]);
 
   const addSeat = (ind) => {
     // adds a seat in students after index ind
@@ -236,7 +247,7 @@ const Session = () => {
               <div className={styles["circle"]}>
                 <Seats
                   seats={seats}
-                  selected={selected[0]}
+                  selected={selected}
                   discussionState={discussionState}
                 />
                 <SeatButtons
@@ -248,7 +259,7 @@ const Session = () => {
                 />
                 {displayAddButtons() && generatePlusButtons(seats)}
                 {generateOuterButtons(seats)}
-                <Arrows seats={seats} edges={edges} />
+                {discussionState && <Arrows seats={seats} edges={edges} />}
               </div>
               <Modal
                 student={annotationModalStudent}
@@ -302,7 +313,7 @@ const Session = () => {
                       width: "100px",
                       bottom: "10%",
                     }}
-                    onClick={() => undoEdge()}
+                    onClick={() => setDiscussionState(false)}
                   >
                     <div>Adjust</div> <FaRegEdit />
                   </Button>
