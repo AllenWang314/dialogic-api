@@ -32,7 +32,7 @@ const OuterButton = (props) => {
 
   return (
     <div className="outer-button" onClick={seatClick} style={styles}>
-      {props.showAnnotations && props.student && (
+      {props.showAnnotations && props.student && props.annotationMap && (
         <>
           <Annotation
             letter="T"

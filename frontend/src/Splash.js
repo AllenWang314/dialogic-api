@@ -18,7 +18,7 @@ const Splash = () => {
       end_time: -1,
       group_score: -1,
     }).then((res) => {
-      return navigate(`/session/${res.data.id}`, {state: res.data});
+      return navigate(`/session/${res.data.id}`);
     })
   }
 

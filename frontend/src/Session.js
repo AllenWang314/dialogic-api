@@ -17,43 +17,46 @@ import RosterApi from "./api/Roster";
 import SessionApi from "./api/Session";
 
 const DEFAULT_COUNT = 13;
-const REACT_APP_AVERAGE_ROSTER_ID = process.env.REACT_APP_AVERAGE_ROSTER_ID;
 
 const Session = () => {
   let { sessionId } = useParams();
 
-  const [seats, setSeats] = useState(
-    Array(DEFAULT_COUNT).fill(null)
-  ); // list of student ids
+  const [seats, setSeats] = useState(null); // list of student ids
   const [annotationModalStudent, setAnnotationModalStudent] = useState(null);
-  const [annotationMap, setAnnotationMap] = useState(ANNOTATIONS);
+  const [annotationMap, setAnnotationMap] = useState(null);
   const [session, setSession] = useState(null);
   const [roster, setRoster] = useState(null);
   const [students, setStudents] = useState(null);
-  const [startDiscussion, setStartDiscussion] = useState(false);
   const [discussionState, setDiscussionState] = useState(false); // map student id to student data from API
   const [selected, setSelected] = useState([]);
   const [lines, setLines] = useState([]);
 
   useEffect(() => {
     SessionApi.getSession(sessionId).then((res) => {
-      setSession(res.data)
-    })
-  }, [])
+      setSession(res.data);
+      setDiscussionState(res.data.start_time > 0);
+    });
+  }, []);
 
   useEffect(() => {
     if (session) {
       RosterApi.getRoster(session.roster).then((res) => {
-        setRoster(res.data)
-      }) 
-    }
-  }, [session]);
-
-  useEffect(() => {
-    if (session) {
+        setRoster(res.data);
+      });
       RosterApi.getStudents(session.roster).then((res) => {
-        setStudents(res.data)
-      }) 
+        // set students
+        setStudents(res.data);
+
+        // set seats based on session data and discussion state
+        if (discussionState) {
+          setSeats(session.student_list.map((student_id) => {
+            return res.data.find((student) => student.id == student_id) 
+          })); 
+        } else {
+          setSeats(Array(DEFAULT_COUNT).fill(null))
+        }
+        
+      });
     }
   }, [session]);
 
@@ -72,22 +75,31 @@ const Session = () => {
   });
 
   const beginDiscussion = () => {
-    setDiscussionState(true);
-    setSeats(getFilledSeats());
-  };
+     SessionApi.updateSession(session.id, {
+      student_list: seats.filter(Boolean).map((seat) => {
+        return seat.id;
+      }),
+      start_time: Math.round(Date.now() / 1000)
+    }).then((res) => {
+      setDiscussionState(true);
+      setSession(res.data);
+      setSeats(res.data.student_list.map((student_id) => {
+        return students.find((student) => student.id == student_id) 
+      }));
+    })
+   };
 
-  const getFilledSeats = () => {
-    return seats.filter(Boolean);
-  };
   const displayAddButtons = () => {
     return !discussionState && seats.length < 20;
   };
   const displayDeleteButtons = () => {
     return !discussionState && seats.length > 2;
   };
+
   const displayBeginButton = () => {
-    return !discussionState && getFilledSeats().length > 1;
+    return !discussionState && seats.filter(Boolean).length > 1;
   };
+
   // modal listener outer button
   const undoEdge = () => {
     lines.pop();
@@ -260,45 +272,64 @@ const Session = () => {
     });
   };
 
-  if (students && roster) {
-  return (
-    <>
-      <div className={globalstyles["App"]}>
-        <Navbar />
-        <div className={globalstyles["page-wrapper"]}>
-          <div className={styles["begin"]}>
-            {!discussionState && (
-              <Roster
-                onRemove={unassignSeat}
-                students={students}
-                seats={seats}
+  if (students && roster && seats) {
+    return (
+      <>
+        <div className={globalstyles["App"]}>
+          <Navbar />
+          <div className={globalstyles["page-wrapper"]}>
+            <div className={styles["begin"]}>
+              {!discussionState && (
+                <Roster
+                  onRemove={unassignSeat}
+                  students={students}
+                  seats={seats}
+                />
+              )}
+              <div className={styles["circle"]}>
+                {generateSeats(seats)}
+                {generateInnerButtons(seats)}
+                {displayAddButtons() && generatePlusButtons(seats)}
+                {generateOuterButtons(seats)}
+                {generateLines()}
+              </div>
+              <Modal
+                student={annotationModalStudent}
+                annotationMap={annotationMap}
+                setAnnotationMap={setAnnotationMap}
+                closeModal={() => {
+                  setAnnotationModalStudent(null);
+                }}
+                openModal={outerButtonClick}
               />
-            )}
-            <div className={styles["circle"]}>
-              {generateSeats(seats)}
-              {generateInnerButtons(seats)}
-              {displayAddButtons() && generatePlusButtons(seats)}
-              {generateOuterButtons(seats)}
-              {generateLines()}
-            </div>
-            <Modal
-              student={annotationModalStudent}
-              annotationMap={annotationMap}
-              setAnnotationMap={setAnnotationMap}
-              closeModal={() => {
-                setAnnotationModalStudent(null);
-              }}
-              openModal={outerButtonClick}
-            />
 
-            {displayBeginButton() && (
-              <button
-                style={{ position: "absolute", height: "50px", width: "100px" }}
-                onClick={() => beginDiscussion()}
-              >
-                begin discussion
-              </button>
-            )}
+              {displayBeginButton() && (
+                <button
+                  style={{
+                    position: "absolute",
+                    height: "50px",
+                    width: "100px",
+                  }}
+                  onClick={() => beginDiscussion()}
+                >
+                  begin discussion
+                </button>
+              )}
+              {discussionState && (
+                <button
+                  style={{
+                    position: "absolute",
+                    height: "50px",
+                    width: "100px",
+                    bottom: "10%",
+                  }}
+                  onClick={() => undoEdge()}
+                >
+                  undo
+                </button>
+              )}
+            </div>
+
             {discussionState && (
               <button
                 style={{
@@ -313,31 +344,16 @@ const Session = () => {
               </button>
             )}
           </div>
-          
-              {startDiscussion && (
-                <button
-                  style={{
-                    position: "absolute",
-                    height: "50px",
-                    width: "100px",
-                    bottom: "10%",
-                  }}
-                  onClick={() => undoEdge()}
-                >
-                  undo
-                </button>
-              )}
-            </div>
-          </div>
+        </div>
         <div className={globalstyles["small-screen"]}>
           Your screen is too small to view our work! Please switch over to an
           ipad or laptop. -The Dialogic Team
         </div>
       </>
     );
-  } 
+  }
 
-  return <div>Loading...</div>
+  return <div>Loading...</div>;
 };
 
 export default Session;
