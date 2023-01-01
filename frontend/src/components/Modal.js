@@ -20,7 +20,10 @@ const Modal = (props) => {
     const newAnnotations = { ...annotations, [letter]: val };
     console.log(annotations);
     console.log(newAnnotations);
-    props.setAnnotationMap({ ...props.annotationMap, [props.student.id]: newAnnotations });
+    props.setAnnotationMap({
+      ...props.annotationMap,
+      [props.student.id]: newAnnotations,
+    });
   };
 
   // annotations save automatically on edit, the save button just closes the modal
@@ -85,16 +88,6 @@ const Modal = (props) => {
                 }}
                 type="number"
                 value={props.annotationMap[props.student.id]["R"]}
-              ></input>
-            </div>
-            <div>
-              F:
-              <input
-                onChange={(event) => {
-                  changed("F", event.target.value);
-                }}
-                type="number"
-                value={props.annotationMap[props.student.id]["F"]}
               ></input>
             </div>
           </div>
