@@ -32,7 +32,7 @@ const Session = () => {
   const [secondsElapsed, setSecondsElapsed] = useState(0);
   const [discussionState, setDiscussionState] = useState(false); // map student id to student data from API
   const [selected, setSelected] = useState(null);
-  const [edges, setEdges] = useState([]);
+  const [edges, setEdges] = useState(null);
 
   useEffect(() => {
     SessionApi.getSession(sessionId).then((res) => {
@@ -41,7 +41,9 @@ const Session = () => {
 
       if (res.data.start_time > 0) {
         setDiscussionState(true);
-        setSecondsElapsed(Math.round((Date.now() - res.data.start_time * 1000) / 1000));
+        setSecondsElapsed(
+          Math.round((Date.now() - res.data.start_time * 1000) / 1000)
+        );
         setEdges(res.data.graph);
       }
     });
@@ -64,7 +66,9 @@ const Session = () => {
               return res.data.find((student) => student.id == student_id);
             })
           );
-          setSecondsElapsed(Math.round((Date.now() - session.start_time * 1000) / 1000));
+          setSecondsElapsed(
+            Math.round((Date.now() - session.start_time * 1000) / 1000)
+          );
         } else {
           setSeats(Array(DEFAULT_COUNT).fill(null));
         }
@@ -141,7 +145,7 @@ const Session = () => {
   }, [selected]);
 
   useEffect(() => {
-    if (edges.length > 1) {
+    if (edges !== null) {
       SessionApi.updateSession(sessionId, {
         graph: edges,
       });
@@ -234,7 +238,7 @@ const Session = () => {
     return (
       <>
         <div className={globalstyles["App"]}>
-          <Navbar seconds={(discussionState) ? secondsElapsed : null }/>
+          <Navbar seconds={discussionState ? secondsElapsed : null} />
           <div className={globalstyles["page-wrapper"]}>
             <div className={styles["begin"]}>
               {!discussionState && (
@@ -271,7 +275,7 @@ const Session = () => {
                 openModal={outerButtonClick}
               />
 
-                <div className={styles["begin-button"]}>
+              <div className={styles["begin-button"]}>
                 <Button
                   size="large"
                   disabled={!displayBeginButton()}
@@ -279,44 +283,44 @@ const Session = () => {
                 >
                   Start Discussion
                 </Button>
-                </div>
+              </div>
               {discussionState && (
                 <div className={styles["session-right"]}>
                   <div className={styles["notes"]}>SOME NOTES</div>
                   <div className={styles["button-panel"]}>
-                  <Button
-                    style={{
-                      position: "absolute",
-                      height: "50px",
-                      width: "100px",
-                      bottom: "10%",
-                    }}
-                    onClick={() => undoEdge()}
-                  >
-                    <div>Stop</div> <FaStopCircle />
-                  </Button>
-                  <Button
-                    style={{
-                      position: "absolute",
-                      height: "50px",
-                      width: "100px",
-                      bottom: "10%",
-                    }}
-                    onClick={() => undoEdge()}
-                  >
-                    <div>Undo</div> <FaUndo />
-                  </Button>
-                  <Button
-                    style={{
-                      position: "absolute",
-                      height: "50px",
-                      width: "100px",
-                      bottom: "10%",
-                    }}
-                    onClick={() => setDiscussionState(false)}
-                  >
-                    <div>Adjust</div> <FaRegEdit />
-                  </Button>
+                    <Button
+                      style={{
+                        position: "absolute",
+                        height: "50px",
+                        width: "100px",
+                        bottom: "10%",
+                      }}
+                      onClick={() => undoEdge()}
+                    >
+                      <div>Stop</div> <FaStopCircle />
+                    </Button>
+                    <Button
+                      style={{
+                        position: "absolute",
+                        height: "50px",
+                        width: "100px",
+                        bottom: "10%",
+                      }}
+                      onClick={() => undoEdge()}
+                    >
+                      <div>Undo</div> <FaUndo />
+                    </Button>
+                    <Button
+                      style={{
+                        position: "absolute",
+                        height: "50px",
+                        width: "100px",
+                        bottom: "10%",
+                      }}
+                      onClick={() => setDiscussionState(false)}
+                    >
+                      <div>Adjust</div> <FaRegEdit />
+                    </Button>
                   </div>
                 </div>
               )}
