@@ -14,7 +14,9 @@ const OuterButton = (props) => {
   const width = 240 - 9 * props.numStudents;
 
   // the bottom names are flipped
-  const flipName = props.index > props.numStudents / 4 && props.index < (props.numStudents * 3) / 4;
+  const flipName =
+    props.index > props.numStudents / 4 &&
+    props.index < (props.numStudents * 3) / 4;
   const flipTransform = flipName ? "scaleY(-1) scaleX(-1)" : "";
   const flipAlignItems = flipName ? "flex-end" : "flex-start";
 
@@ -30,14 +32,32 @@ const OuterButton = (props) => {
 
   return (
     <div className="outer-button" onClick={seatClick} style={styles}>
-      {props.showAnnotations && (
+      {props.showAnnotations && props.student && (
         <>
-          <Annotation letter="T" count={props.annotationMap[props.student.id]["T"]} />
-          <Annotation letter="A" count={props.annotationMap[props.student.id]["A"]} />
-          <Annotation letter="C" count={props.annotationMap[props.student.id]["C"]} />
-          <Annotation letter="Q" count={props.annotationMap[props.student.id]["Q"]} />
-          <Annotation letter="R" count={props.annotationMap[props.student.id]["R"]} />
-          <Annotation letter="F" count={props.annotationMap[props.student.id]["F"]} />
+          <Annotation
+            letter="T"
+            count={props.annotationMap[props.student.id]["T"]}
+          />
+          <Annotation
+            letter="A"
+            count={props.annotationMap[props.student.id]["A"]}
+          />
+          <Annotation
+            letter="C"
+            count={props.annotationMap[props.student.id]["C"]}
+          />
+          <Annotation
+            letter="Q"
+            count={props.annotationMap[props.student.id]["Q"]}
+          />
+          <Annotation
+            letter="R"
+            count={props.annotationMap[props.student.id]["R"]}
+          />
+          <Annotation
+            letter="F"
+            count={props.annotationMap[props.student.id]["F"]}
+          />
         </>
       )}
     </div>

@@ -5,8 +5,14 @@
   font-size: 15px;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .seat-button:hover {
+  cursor: pointer;
+}
+
+.seat-button:hover {
+  border: 1px solid white;
   cursor: pointer;
 }

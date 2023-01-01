@@ -1,16 +1,17 @@
 import styles from "./Session.module.css";
 import Seat from "./components/Seat";
-import DeleteButton from "./components/DeleteButton";
 import { useState, useEffect } from "react";
 import AddButton from "./components/AddButton";
 import SeatName from "./components/SeatName";
 import Roster from "./components/Roster";
-import { STUDENTS_AVERAGE } from "./constants.js";
+import { STUDENTS_AVERAGE, ANNOTATIONS } from "./constants.js";
 import globalstyles from "./global.module.css";
 import Navbar from "./components/Navbar";
 import React from "react";
 import SeatButton from "./components/SeatButton";
 import CurvedArrow from "./CurvedArrow";
+import OuterButton from "./components/OuterButton";
+import Modal from "./components/Modal";
 
 const DEFAULT_COUNT = 13;
 
@@ -18,10 +19,18 @@ const Session = () => {
   const [seats, setSeats] = useState(
     Array(DEFAULT_COUNT).fill({ student: null })
   ); // list of student ids
+  const [annotationModalStudent, setAnnotationModalStudent] = useState(null);
+  const [showAnnotations, setShowAnnotations] = useState(true);
+  const [annotationMap, setAnnotationMap] = useState(ANNOTATIONS);
   const [students, setStudents] = useState(STUDENTS_AVERAGE); // map student id to student data from API
   const [startDiscussion, setStartDiscussion] = useState(false); // map student id to student data from API
   const [selected, setSelected] = useState([]);
   const [lines, setLines] = useState([]);
+
+  // modal listener outer button
+  const outerButtonClick = (student) => {
+    setAnnotationModalStudent(student);
+  };
 
   // listener for drawing lines
   useEffect(() => {
@@ -68,6 +77,7 @@ const Session = () => {
           index={ind}
           student={obj}
           numStudents={students.length}
+          showName={startDiscussion}
         />
       );
     });
@@ -93,47 +103,52 @@ const Session = () => {
   // programatically generate inner buttons
   const generateInnerButtons = (students) => {
     return students.map((obj, ind) => {
-      if (startDiscussion) {
-        return (
-          <SeatButton
-            key={ind}
-            index={ind}
-            student={obj}
-            numStudents={students.length}
-            selected={selected}
-            setSelected={setSelected}
-          />
-        );
-      } else {
-        return (
-          <DeleteButton
-            key={ind}
-            index={ind}
-            student={obj}
-            numStudents={students.length}
-            onClick={() => {
-              deleteSeat(ind);
-            }}
-          />
-        );
-      }
+      return (
+        <SeatButton
+          key={ind}
+          index={ind}
+          student={obj}
+          numStudents={students.length}
+          selected={selected}
+          deleteMode={!startDiscussion}
+          setSelected={setSelected}
+          onDelete={() => {
+            deleteSeat(ind);
+          }}
+        />
+      );
     });
   };
   const generateOuterButtons = (students) => {
     return students.map((obj, ind) => {
-      return (
-        <SeatName
-          key={ind}
-          index={ind}
-          student={obj}
-          adjustMode={!startDiscussion}
-          numStudents={students.length}
-          onAssign={(student_id) => {
-            assignSeat(student_id, ind);
-          }}
-          onRemove={unassignSeat}
-        />
-      );
+      if (!startDiscussion) {
+        return (
+          <SeatName
+            key={ind}
+            index={ind}
+            student={obj}
+            adjustMode={!startDiscussion}
+            numStudents={students.length}
+            onAssign={(student_id) => {
+              assignSeat(student_id, ind);
+            }}
+            onRemove={unassignSeat}
+          />
+        );
+      } else {
+        return (
+          <OuterButton
+            key={ind}
+            index={ind}
+            student={obj}
+            numStudents={students.length}
+            annotationMap={annotationMap}
+            setAnnotationMap={setAnnotationMap}
+            outerButtonClick={outerButtonClick}
+            showAnnotations={showAnnotations}
+          />
+        );
+      }
     });
   };
 
@@ -187,6 +202,16 @@ const Session = () => {
               {generateOuterButtons(seats.map((student) => student.student))}
               {generateLines()}
             </div>
+            <Modal
+              student={annotationModalStudent}
+              annotationMap={annotationMap}
+              setAnnotationMap={setAnnotationMap}
+              closeModal={() => {
+                setAnnotationModalStudent(null);
+              }}
+              openModal={outerButtonClick}
+            />
+
             {!startDiscussion && (
               <button
                 style={{ position: "absolute", height: "50px", width: "100px" }}
@@ -196,6 +221,21 @@ const Session = () => {
               </button>
             )}
           </div>
+          {startDiscussion && (
+            <div className={styles["annotations-toggle"]}>
+              Annotations {showAnnotations ? "On" : "Off"}
+              <label className="switch">
+                <input
+                  type="checkbox"
+                  checked={showAnnotations}
+                  onClick={() => {
+                    setShowAnnotations(!showAnnotations);
+                  }}
+                />
+                <span className="slider round"></span>
+              </label>
+            </div>
+          )}
         </div>
       </div>
       <div className={globalstyles["small-screen"]}>

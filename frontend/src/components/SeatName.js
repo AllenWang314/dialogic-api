@@ -25,28 +25,26 @@ const SeatName = (props) => {
     ev.preventDefault();
     const studentID = ev.dataTransfer.getData("studentID");
     const seatIndex = ev.dataTransfer.getData("index");
-    // console.log(studentID, "||", seatIndex);
-
     props.onAssign(studentID);
     props.onRemove(seatIndex);
-
-    // console.log("assigning", data);
-    // props.document.getElementById(data).cloneNode(true);
   }
   // this part is where we did linear regression over what
   // looked nice to find the div width
-  const width = 240 - 9 * props.numStudents;
+  const width = 220 - 9 * props.numStudents;
 
   // the bottom names are flipped
-  const flipName = props.index > props.numStudents / 4 && props.index < (props.numStudents * 3) / 4;
+  const flipName =
+    props.index > props.numStudents / 4 &&
+    props.index < (props.numStudents * 3) / 4;
   const flipTransform = flipName ? "scaleY(-1) scaleX(-1)" : "";
-  const cursorStyle = props.student?.name && props.adjustMode ? "grab" : "default";
+  const cursorStyle =
+    props.student?.name && props.adjustMode ? "grab" : "default";
   // programatically inject styles
   const styles = {
     transform:
       `translate(${300 - width / 2}px) translateY(${300 - 10}px) rotate(${
         turnVar * props.index
-      }turn) translateY(${-300}px)` + flipTransform,
+      }turn) translateY(${-285}px)` + flipTransform,
     width: `${width}px`,
     cursor: cursorStyle,
     border: props.adjustMode ? "1px solid white" : "none",
@@ -61,7 +59,7 @@ const SeatName = (props) => {
       onDragStart={drag}
       onDrop={drop}
     >
-      <div className={cssstyles["name"]}> {getName(props.student)}</div>
+      {/* <div className={cssstyles["name"]}> {getName(props.student)}</div> */}
     </div>
   );
 };
