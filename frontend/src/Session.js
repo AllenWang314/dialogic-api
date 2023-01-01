@@ -27,6 +27,27 @@ const Session = () => {
   const [selected, setSelected] = useState([]);
   const [lines, setLines] = useState([]);
 
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      //if esc key was not pressed in combination with ctrl or alt or shift
+      const isNotCombinedKey = !(
+        event.ctrlKey ||
+        event.altKey ||
+        event.shiftKey
+      );
+      if (isNotCombinedKey) {
+        setSelected([]);
+      }
+    }
+  });
+
+  // modal listener outer button
+  const undoEdge = () => {
+    lines.pop();
+    setLines(lines);
+    setSelected([]);
+  };
+
   // modal listener outer button
   const outerButtonClick = (student) => {
     setAnnotationModalStudent(student);
@@ -218,6 +239,19 @@ const Session = () => {
                 onClick={() => setStartDiscussion(true)}
               >
                 begin discussion
+              </button>
+            )}
+            {startDiscussion && (
+              <button
+                style={{
+                  position: "absolute",
+                  height: "50px",
+                  width: "100px",
+                  bottom: "10%",
+                }}
+                onClick={() => undoEdge()}
+              >
+                undo
               </button>
             )}
           </div>
