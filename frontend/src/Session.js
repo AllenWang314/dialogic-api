@@ -2,14 +2,14 @@ import styles from "./Session.module.css";
 import Seat from "./components/Seat";
 import { useState, useEffect } from "react";
 import AddButton from "./components/AddButton";
-import SeatName from "./components/SeatName";
+import SeatNameButton from "./components/SeatNameButton";
 import Roster from "./components/Roster";
-import { STUDENTS_AVERAGE, ANNOTATIONS } from "./constants.js";
+import { STUDENTS_MORE, ANNOTATIONS } from "./constants.js";
 import globalstyles from "./global.module.css";
 import Navbar from "./components/Navbar";
 import React from "react";
 import SeatButton from "./components/SeatButton";
-import CurvedArrow from "./CurvedArrow";
+import CurvedArrow from "./components/CurvedArrow";
 import OuterButton from "./components/OuterButton";
 import Modal from "./components/Modal";
 
@@ -22,7 +22,7 @@ const Session = () => {
   const [annotationModalStudent, setAnnotationModalStudent] = useState(null);
   const [showAnnotations, setShowAnnotations] = useState(true);
   const [annotationMap, setAnnotationMap] = useState(ANNOTATIONS);
-  const [students, setStudents] = useState(STUDENTS_AVERAGE); // map student id to student data from API
+  const [students, setStudents] = useState(STUDENTS_MORE); // map student id to student data from API
   const [startDiscussion, setStartDiscussion] = useState(false); // map student id to student data from API
   const [selected, setSelected] = useState([]);
   const [lines, setLines] = useState([]);
@@ -123,7 +123,7 @@ const Session = () => {
     return students.map((obj, ind) => {
       if (!startDiscussion) {
         return (
-          <SeatName
+          <SeatNameButton
             key={ind}
             index={ind}
             student={obj}
@@ -191,7 +191,7 @@ const Session = () => {
             {!startDiscussion && (
               <Roster
                 onRemove={unassignSeat}
-                students={STUDENTS_AVERAGE}
+                students={students}
                 seats={seats}
               />
             )}

@@ -1,6 +1,6 @@
 import cssstyles from "./SeatName.module.css";
 
-const SeatName = (props) => {
+const SeatNameButton = (props) => {
   const turnVar = 1 / props.numStudents;
 
   const getName = (student) => {
@@ -59,9 +59,9 @@ const SeatName = (props) => {
       onDragStart={drag}
       onDrop={drop}
     >
-      {/* <div className={cssstyles["name"]}> {getName(props.student)}</div> */}
+      <div className={cssstyles["name"]}> {getName(props.student)}</div>
     </div>
   );
 };
 
-export default SeatName;
+export default SeatNameButton;

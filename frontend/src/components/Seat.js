@@ -21,15 +21,14 @@ const Seat = (props) => {
   const flipName =
     props.index > props.numStudents / 4 &&
     props.index < (props.numStudents * 3) / 4;
-  const nameStyle = {
-    transform: "scaleY(-1) scaleX(-1)",
-  };
+  const flipTransform = flipName ? "scaleY(-1) scaleX(-1)" : "";
+
   // we create individual circle arcs as svgs programatically
   // then we rotate them to the correct place on the circle
   return (
     <div className={cssstyles["seat"]} style={styles}>
-      <div className={cssstyles["name"]} style={flipName ? nameStyle : {}}>
-        {getName(props.student)}
+      <div className={cssstyles["name"]} style={{ transform: flipTransform }}>
+        {props.showName && getName(props.student)}
       </div>
       <svg viewBox="0 0 1000 1000">
         <circle
