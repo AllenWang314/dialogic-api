@@ -16,6 +16,18 @@ def ping(request):
     if request.method == 'GET':
         return Response({"message": "pong"}, status=status.HTTP_200_OK)
 
+
+@api_view(['GET'])
+def students_from_roster(request, pk):
+    if request.method == 'GET':
+        roster = Roster.objects.all().get(pk=pk)
+        students = []
+        for student_id in roster.student_list:
+            student = Student.objects.all().get(pk=student_id)
+            students.append(student)
+        return Response(StudentSerializer(students, many=True).data, status=status.HTTP_200_OK)
+
+
 class StudentView(mixins.CreateModelMixin, generics.GenericAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer

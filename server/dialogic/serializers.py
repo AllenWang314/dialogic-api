@@ -20,7 +20,7 @@ class RosterSerializer(serializers.ModelSerializer):
 class SessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Session
-        fields = ["id", "created", "roster", "magic_link", "name", "description", "notes", "student_list", "graph", "statistics", "duration_milliseconds", "group_score", "survey_questions"]
+        fields = ["id", "created", "roster", "magic_link", "name", "notes", "student_list", "graph", "statistics", "start_time", "end_time", "group_score", "survey_questions"]
 
 class StudentSessionSerializer(serializers.ModelSerializer):
     class Meta:

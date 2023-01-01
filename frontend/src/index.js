@@ -11,14 +11,13 @@ import reportWebVitals from './reportWebVitals';
 import Session from './Session';
 import Splash from './Splash';
 
-
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Splash />,
   },
   {
-    path: "/session",
+    path: "/session/:sessionId",
     element: <Session/>,
   },
   {

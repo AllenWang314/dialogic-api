@@ -8,24 +8,54 @@ import { STUDENTS_MORE, ANNOTATIONS } from "./constants.js";
 import globalstyles from "./global.module.css";
 import Navbar from "./components/Navbar";
 import React from "react";
+import { useLocation, useParams } from "react-router-dom";
 import SeatButton from "./components/SeatButton";
 import CurvedArrow from "./components/CurvedArrow";
 import OuterButton from "./components/OuterButton";
 import Modal from "./components/Modal";
+import RosterApi from "./api/Roster";
+import SessionApi from "./api/Session";
 
 const DEFAULT_COUNT = 13;
+const REACT_APP_AVERAGE_ROSTER_ID = process.env.REACT_APP_AVERAGE_ROSTER_ID;
 
 const Session = () => {
+  let { sessionId } = useParams();
+
   const [seats, setSeats] = useState(
     Array(DEFAULT_COUNT).fill({ student: null })
   ); // list of student ids
   const [annotationModalStudent, setAnnotationModalStudent] = useState(null);
-  const [showAnnotations, setShowAnnotations] = useState(true);
   const [annotationMap, setAnnotationMap] = useState(ANNOTATIONS);
-  const [students, setStudents] = useState(STUDENTS_MORE); // map student id to student data from API
+  const [session, setSession] = useState(null);
+  const [roster, setRoster] = useState(null);
+  const [students, setStudents] = useState(null);
+  
   const [startDiscussion, setStartDiscussion] = useState(false); // map student id to student data from API
   const [selected, setSelected] = useState([]);
   const [lines, setLines] = useState([]);
+
+  useEffect(() => {
+    SessionApi.getSession(sessionId).then((res) => {
+      setSession(res.data)
+    })
+  }, [])
+
+  useEffect(() => {
+    if (session) {
+      RosterApi.getRoster(session.roster).then((res) => {
+        setRoster(res.data)
+      }) 
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (session) {
+      RosterApi.getStudents(session.roster).then((res) => {
+        setStudents(res.data)
+      }) 
+    }
+  }, [session]);
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
@@ -166,7 +196,7 @@ const Session = () => {
             annotationMap={annotationMap}
             setAnnotationMap={setAnnotationMap}
             outerButtonClick={outerButtonClick}
-            showAnnotations={showAnnotations}
+            showAnnotations={true}
           />
         );
       }
@@ -203,81 +233,74 @@ const Session = () => {
     });
   };
 
-  return (
-    <>
-      <div className={globalstyles["App"]}>
-        <Navbar />
-        <div className={globalstyles["page-wrapper"]}>
-          <div className={styles["begin"]}>
-            {!startDiscussion && (
-              <Roster
-                onRemove={unassignSeat}
-                students={students}
-                seats={seats}
-              />
-            )}
-            <div className={styles["circle"]}>
-              {generateSeats(seats.map((student) => student.student))}
-              {generateInnerButtons(seats)}
-              {!startDiscussion && generatePlusButtons(seats)}
-              {generateOuterButtons(seats.map((student) => student.student))}
-              {generateLines()}
-            </div>
-            <Modal
-              student={annotationModalStudent}
-              annotationMap={annotationMap}
-              setAnnotationMap={setAnnotationMap}
-              closeModal={() => {
-                setAnnotationModalStudent(null);
-              }}
-              openModal={outerButtonClick}
-            />
-
-            {!startDiscussion && (
-              <button
-                style={{ position: "absolute", height: "50px", width: "100px" }}
-                onClick={() => setStartDiscussion(true)}
-              >
-                begin discussion
-              </button>
-            )}
-            {startDiscussion && (
-              <button
-                style={{
-                  position: "absolute",
-                  height: "50px",
-                  width: "100px",
-                  bottom: "10%",
-                }}
-                onClick={() => undoEdge()}
-              >
-                undo
-              </button>
-            )}
-          </div>
-          {startDiscussion && (
-            <div className={styles["annotations-toggle"]}>
-              Annotations {showAnnotations ? "On" : "Off"}
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={showAnnotations}
-                  onClick={() => {
-                    setShowAnnotations(!showAnnotations);
-                  }}
+  if (students && roster) {
+    return (
+      <>
+        <div className={globalstyles["App"]}>
+          <Navbar />
+          <div className={globalstyles["page-wrapper"]}>
+            <div className={styles["begin"]}>
+              {!startDiscussion && (
+                <Roster
+                  onRemove={unassignSeat}
+                  students={students}
+                  seats={seats}
                 />
-                <span className="slider round"></span>
-              </label>
+              )}
+              <div className={styles["circle"]}>
+                {generateSeats(seats.map((student) => student.student))}
+                {generateInnerButtons(seats)}
+                {!startDiscussion && generatePlusButtons(seats)}
+                {generateOuterButtons(seats.map((student) => student.student))}
+                {generateLines()}
+              </div>
+              <Modal
+                student={annotationModalStudent}
+                annotationMap={annotationMap}
+                setAnnotationMap={setAnnotationMap}
+                closeModal={() => {
+                  setAnnotationModalStudent(null);
+                }}
+                openModal={outerButtonClick}
+              />
+
+              {!startDiscussion && (
+                <button
+                  style={{
+                    position: "absolute",
+                    height: "50px",
+                    width: "100px",
+                  }}
+                  onClick={() => setStartDiscussion(true)}
+                >
+                  begin discussion
+                </button>
+              )}
+              {startDiscussion && (
+                <button
+                  style={{
+                    position: "absolute",
+                    height: "50px",
+                    width: "100px",
+                    bottom: "10%",
+                  }}
+                  onClick={() => undoEdge()}
+                >
+                  undo
+                </button>
+              )}
             </div>
-          )}
+          </div>
         </div>
-      </div>
-      <div className={globalstyles["small-screen"]}>
-        Your screen is too small to view our work! Please switch over to an ipad
-        or laptop. -The Dialogic Team
-      </div>
-    </>
-  );
+        <div className={globalstyles["small-screen"]}>
+          Your screen is too small to view our work! Please switch over to an
+          ipad or laptop. -The Dialogic Team
+        </div>
+      </>
+    );
+  } 
+
+  return <div>Loading...</div>
 };
 
 export default Session;

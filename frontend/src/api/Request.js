@@ -1,5 +1,4 @@
 import axios from "axios";
-import Cookies from "universal-cookie";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
