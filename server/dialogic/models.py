@@ -56,6 +56,7 @@ class Session(models.Model):
     end_time = models.IntegerField()
     group_score = models.IntegerField()
     discussion_state = models.CharField(max_length=200, default="initial") 
+    annotations = models.JSONField(default=dict)
     survey_questions = ArrayField(models.TextField(), default=default_questions)
 
 
