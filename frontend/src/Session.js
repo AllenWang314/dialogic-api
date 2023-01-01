@@ -30,7 +30,9 @@ const Session = () => {
   const [roster, setRoster] = useState(null);
   const [students, setStudents] = useState(null);
   const [secondsElapsed, setSecondsElapsed] = useState(0);
-  const [discussionState, setDiscussionState] = useState(false); // map student id to student data from API
+  const [notes, setNotes] = useState("");
+  // discussion state: "initial" "discussing" "adjust" "finished"
+  const [discussionState, setDiscussionState] = useState("initial"); // map student id to student data from API
   const [selected, setSelected] = useState(null);
   const [edges, setEdges] = useState([]);
 
@@ -38,10 +40,13 @@ const Session = () => {
     SessionApi.getSession(sessionId).then((res) => {
       // set initial session data
       setSession(res.data);
+      setNotes(res.data.notes)
 
-      if (res.data.start_time > 0) {
-        setDiscussionState(true);
-        setSecondsElapsed(Math.round((Date.now() - res.data.start_time * 1000) / 1000));
+      if (res.data.discussion_state !== "initial") {
+        setDiscussionState(res.data.discussion_state);
+        setSecondsElapsed(
+          Math.round((Date.now() - res.data.start_time * 1000) / 1000)
+        );
         setEdges(res.data.graph);
       }
     });
@@ -58,14 +63,17 @@ const Session = () => {
         setStudents(res.data);
 
         // set seats based on session data and discussion state
-        if (discussionState) {
+        if (session.discussion_state != "initial") {
           setSeats(
             session.student_list.map((student_id) => {
               return res.data.find((student) => student.id == student_id);
             })
           );
-          setSecondsElapsed(Math.round((Date.now() - session.start_time * 1000) / 1000));
+          setSecondsElapsed(
+            Math.round((Date.now() - session.start_time * 1000) / 1000)
+          );
         } else {
+          console.log("what");
           setSeats(Array(DEFAULT_COUNT).fill(null));
         }
       });
@@ -87,21 +95,31 @@ const Session = () => {
   });
 
   setInterval(() => {
-    if (session && discussionState && secondsElapsed) {
+    if (session && discussionState !== "initial" && secondsElapsed) {
       setSecondsElapsed(
         Math.round((Date.now() - session.start_time * 1000) / 1000)
       );
     }
   }, 50);
 
+  setInterval(() => {
+    if (session && (discussionState == "discussing" || discussionState == "adjust")) {
+      SessionApi.updateSession(sessionId, {
+        notes: notes,
+      });
+    }
+  }, 60000);
+
   const beginDiscussion = () => {
     SessionApi.updateSession(session.id, {
       student_list: seats.filter(Boolean).map((seat) => {
         return seat.id;
       }),
+      discussion_state: "discussing",
       start_time: Math.round(Date.now() / 1000),
+      notes: notes,
     }).then((res) => {
-      setDiscussionState(true);
+      setDiscussionState(res.data.discussion_state);
       setSession(res.data);
       setSeats(
         res.data.student_list.map((student_id) => {
@@ -111,12 +129,35 @@ const Session = () => {
     });
   };
 
+  const finishAdjustment = () => {
+    SessionApi.updateSession(session.id, {
+      student_list: seats.filter(Boolean).map((seat) => {
+        return seat.id;
+      }),
+      notes: notes,
+    }).then((res) => {
+      setSession(res.data);
+      setDiscussionState("discussing")
+      setSeats(
+        res.data.student_list.map((student_id) => {
+          return students.find((student) => student.id == student_id);
+        })
+      );
+    }); 
+  }
+
   const displayAddButtons = () => {
-    return !discussionState && seats.length < 20;
+    return (
+      (discussionState == "initial" || discussionState == "adjust") &&
+      seats.length < 20
+    );
   };
 
   const displayBeginButton = () => {
-    return !discussionState && seats.filter(Boolean).length > 1;
+    return (
+      (discussionState == "initial" || discussionState == "adjust") &&
+      seats.filter(Boolean).length > 1
+    );
   };
 
   const undoEdge = () => {
@@ -144,6 +185,7 @@ const Session = () => {
     if (edges.length > 1) {
       SessionApi.updateSession(sessionId, {
         graph: edges,
+        notes: notes,
       });
     }
   }, [edges]);
@@ -199,13 +241,15 @@ const Session = () => {
 
   const generateOuterButtons = (students) => {
     return students.map((obj, ind) => {
-      if (!discussionState) {
+      if (discussionState == "initial" || discussionState == "adjust") {
         return (
           <SeatNameButton
             key={ind}
             index={ind}
             student={obj}
-            adjustMode={!discussionState}
+            adjustMode={
+              discussionState == "initial" || discussionState == "adjust"
+            }
             numStudents={students.length}
             onAssign={(student_id) => {
               assignSeat(student_id, ind);
@@ -230,14 +274,22 @@ const Session = () => {
     });
   };
 
+  const notesOnChange = (event) => {
+    event.preventDefault()
+    setNotes(event.target.value)
+  }
+
   if (students && roster) {
     return (
       <>
         <div className={globalstyles["App"]}>
-          <Navbar seconds={(discussionState) ? secondsElapsed : null }/>
+          <Navbar
+            seconds={discussionState !== "initial" ? secondsElapsed : null}
+          />
           <div className={globalstyles["page-wrapper"]}>
             <div className={styles["begin"]}>
-              {!discussionState && (
+              {(discussionState == "initial" ||
+                discussionState == "adjust") && (
                 <Roster
                   onRemove={unassignSeat}
                   students={students}
@@ -248,18 +300,20 @@ const Session = () => {
                 <Seats
                   seats={seats}
                   selected={selected}
-                  discussionState={discussionState}
+                  discussionState={discussionState == "discussing"}
                 />
                 <SeatButtons
                   seats={seats}
                   selected={selected}
                   setSelected={setSelected}
-                  discussionState={discussionState}
-                  onDelete={deleteSeat}
+                  discussionState={discussionState == "discussing"}
+                  onDelete={() => deleteSeat()}
                 />
                 {displayAddButtons() && generatePlusButtons(seats)}
                 {generateOuterButtons(seats)}
-                {discussionState && <Arrows seats={seats} edges={edges} />}
+                {discussionState == "discussing" && (
+                  <Arrows seats={seats} edges={edges} />
+                )}
               </div>
               <Modal
                 student={annotationModalStudent}
@@ -270,53 +324,66 @@ const Session = () => {
                 }}
                 openModal={outerButtonClick}
               />
-
-                <div className={styles["begin-button"]}>
-                <Button
-                  size="large"
-                  disabled={!displayBeginButton()}
-                  onClick={() => beginDiscussion()}
-                >
-                  Start Discussion
-                </Button>
-                </div>
-              {discussionState && (
+          {(discussionState === "initial" || discussionState === "adjust") &&
+              <div className={styles["begin-button"]}>
+                {discussionState === "initial" ? (
+                  <Button
+                    size="large"
+                    disabled={!displayBeginButton()}
+                    onClick={() => beginDiscussion()}
+                  >
+                    Start Discussion
+                  </Button>
+                ) : (
+                  <Button
+                    size="large"
+                    disabled={!displayBeginButton()}
+                    onClick={() => finishAdjustment()}
+                  >
+                    Finish Adjustment
+                  </Button>
+                )}
+              </div>
+  }
+              {!(
+                discussionState == "initial" || discussionState == "adjust"
+              ) && (
                 <div className={styles["session-right"]}>
-                  <div className={styles["notes"]}>SOME NOTES</div>
+                  <textarea className={styles["notes"]} onChange={notesOnChange}>{notes}</textarea>
                   <div className={styles["button-panel"]}>
-                  <Button
-                    style={{
-                      position: "absolute",
-                      height: "50px",
-                      width: "100px",
-                      bottom: "10%",
-                    }}
-                    onClick={() => undoEdge()}
-                  >
-                    <div>Stop</div> <FaStopCircle />
-                  </Button>
-                  <Button
-                    style={{
-                      position: "absolute",
-                      height: "50px",
-                      width: "100px",
-                      bottom: "10%",
-                    }}
-                    onClick={() => undoEdge()}
-                  >
-                    <div>Undo</div> <FaUndo />
-                  </Button>
-                  <Button
-                    style={{
-                      position: "absolute",
-                      height: "50px",
-                      width: "100px",
-                      bottom: "10%",
-                    }}
-                    onClick={() => setDiscussionState(false)}
-                  >
-                    <div>Adjust</div> <FaRegEdit />
-                  </Button>
+                    <Button
+                      style={{
+                        position: "absolute",
+                        height: "50px",
+                        width: "100px",
+                        bottom: "10%",
+                      }}
+                      onClick={() => undoEdge()}
+                    >
+                      <div>Stop</div> <FaStopCircle />
+                    </Button>
+                    <Button
+                      style={{
+                        position: "absolute",
+                        height: "50px",
+                        width: "100px",
+                        bottom: "10%",
+                      }}
+                      onClick={() => undoEdge()}
+                    >
+                      <div>Undo</div> <FaUndo />
+                    </Button>
+                    <Button
+                      style={{
+                        position: "absolute",
+                        height: "50px",
+                        width: "100px",
+                        bottom: "10%",
+                      }}
+                      onClick={() => setDiscussionState("adjust")}
+                    >
+                      <div>Adjust</div> <FaRegEdit />
+                    </Button>
                   </div>
                 </div>
               )}

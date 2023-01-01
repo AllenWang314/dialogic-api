@@ -48,7 +48,7 @@ class Session(models.Model):
     roster = models.ForeignKey(Roster, on_delete=models.CASCADE)
     magic_link = models.UUIDField(default=uuid.uuid4)
     name = models.CharField(max_length=200)
-    notes = models.TextField(blank=True)
+    notes = models.TextField(blank=True, default="Notes:")
     student_list = ArrayField(models.CharField(max_length=64), blank=True)
     graph = ArrayField(models.CharField(max_length=64), blank=True)
     statistics = models.JSONField(default=dict)
