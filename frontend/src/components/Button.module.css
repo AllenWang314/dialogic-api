@@ -1,0 +1,37 @@
+.button {
+    border: 1px solid #183A37;
+    background-color: #D3D5D4;
+    font-family: inherit;
+    width: 87px;
+    height: 40px;
+    border-radius: 5px;
+    font-size: 16px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.button:hover {
+    cursor: pointer;
+    background-color: #ffffff;
+}
+
+
+.big-button {
+    border: 1px solid #183A37;
+    background-color: #D3D5D4;
+    font-family: inherit;
+    padding: 10px 40px;
+    border-radius: 5px;
+    font-size: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.big-button:hover {
+    cursor: pointer;
+    background-color: #ffffff;
+}

@@ -2,6 +2,7 @@ import styles from "./Session.module.css";
 import Seats from "./components/Seats";
 import { useState, useEffect } from "react";
 import AddButton from "./components/AddButton";
+import Button from "./components/Button";
 import SeatNameButton from "./components/SeatNameButtons";
 import Roster from "./components/Roster";
 import { STUDENTS_MORE, ANNOTATIONS } from "./constants.js";
@@ -15,6 +16,7 @@ import Modal from "./components/Modal";
 import RosterApi from "./api/Roster";
 import SessionApi from "./api/Session";
 import Arrows from "./components/Arrows";
+import { FaPlayCircle, FaStopCircle, FaUndo, FaRegEdit } from "react-icons/fa";
 
 const DEFAULT_COUNT = 13;
 
@@ -27,14 +29,20 @@ const Session = () => {
   const [session, setSession] = useState(null);
   const [roster, setRoster] = useState(null);
   const [students, setStudents] = useState(null);
+  const [secondsElapsed, setSecondsElapsed] = useState(0);
   const [discussionState, setDiscussionState] = useState(false); // map student id to student data from API
   const [selected, setSelected] = useState([]);
   const [edges, setEdges] = useState([]);
 
   useEffect(() => {
     SessionApi.getSession(sessionId).then((res) => {
+      // set initial session data
       setSession(res.data);
-      setDiscussionState(res.data.start_time > 0);
+
+      if (res.data.start_time > 0) {
+        setDiscussionState(true);
+        setSecondsElapsed(Math.round((Date.now() - res.data.start_time * 1000) / 1000));
+      }
     });
   }, []);
 
@@ -43,6 +51,7 @@ const Session = () => {
       RosterApi.getRoster(session.roster).then((res) => {
         setRoster(res.data);
       });
+
       RosterApi.getStudents(session.roster).then((res) => {
         // set students
         setStudents(res.data);
@@ -54,12 +63,35 @@ const Session = () => {
               return res.data.find((student) => student.id == student_id);
             })
           );
+          setSecondsElapsed(Math.round((Date.now() - session.start_time * 1000) / 1000));
         } else {
           setSeats(Array(DEFAULT_COUNT).fill(null));
         }
       });
     }
   }, [session]);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      //if esc key was not pressed in combination with ctrl or alt or shift
+      const isNotCombinedKey = !(
+        event.ctrlKey ||
+        event.altKey ||
+        event.shiftKey
+      );
+      if (isNotCombinedKey) {
+        setSelected([]);
+      }
+    }
+  });
+
+  setInterval(() => {
+    if (session && discussionState && secondsElapsed) {
+      setSecondsElapsed(
+        Math.round((Date.now() - session.start_time * 1000) / 1000)
+      );
+    }
+  }, 50);
 
   const beginDiscussion = () => {
     SessionApi.updateSession(session.id, {
@@ -191,7 +223,7 @@ const Session = () => {
     return (
       <>
         <div className={globalstyles["App"]}>
-          <Navbar />
+          <Navbar seconds={(discussionState) ? secondsElapsed : null }/>
           <div className={globalstyles["page-wrapper"]}>
             <div className={styles["begin"]}>
               {!discussionState && (
@@ -228,30 +260,54 @@ const Session = () => {
                 openModal={outerButtonClick}
               />
 
-              {displayBeginButton() && (
-                <button
-                  style={{
-                    position: "absolute",
-                    height: "50px",
-                    width: "100px",
-                  }}
+                <div className={styles["begin-button"]}>
+                <Button
+                  size="large"
+                  disabled={!displayBeginButton()}
                   onClick={() => beginDiscussion()}
                 >
-                  begin discussion
-                </button>
-              )}
+                  Start Discussion
+                </Button>
+                </div>
               {discussionState && (
-                <button
-                  style={{
-                    position: "absolute",
-                    height: "50px",
-                    width: "100px",
-                    bottom: "10%",
-                  }}
-                  onClick={() => undoEdge()}
-                >
-                  undo
-                </button>
+                <div className={styles["session-right"]}>
+                  <div className={styles["notes"]}>SOME NOTES</div>
+                  <div className={styles["button-panel"]}>
+                  <Button
+                    style={{
+                      position: "absolute",
+                      height: "50px",
+                      width: "100px",
+                      bottom: "10%",
+                    }}
+                    onClick={() => undoEdge()}
+                  >
+                    <div>Stop</div> <FaStopCircle />
+                  </Button>
+                  <Button
+                    style={{
+                      position: "absolute",
+                      height: "50px",
+                      width: "100px",
+                      bottom: "10%",
+                    }}
+                    onClick={() => undoEdge()}
+                  >
+                    <div>Undo</div> <FaUndo />
+                  </Button>
+                  <Button
+                    style={{
+                      position: "absolute",
+                      height: "50px",
+                      width: "100px",
+                      bottom: "10%",
+                    }}
+                    onClick={() => undoEdge()}
+                  >
+                    <div>Adjust</div> <FaRegEdit />
+                  </Button>
+                  </div>
+                </div>
               )}
             </div>
           </div>

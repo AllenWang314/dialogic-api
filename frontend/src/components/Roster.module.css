@@ -22,7 +22,6 @@
     padding: 15px;
     width: 280px;
     z-index: 1;
-
 }
 
 .classList {
@@ -34,4 +33,10 @@
     color: #D3D5D4;
     font-size: 20px;
     margin-left: 10px;
+}
+
+.button-panel {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
 }

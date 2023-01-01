@@ -1,5 +1,6 @@
 import styles from "./Splash.module.css";
 import globalstyles from "./global.module.css";
+import Button from "./components/Button";
 import { useNavigate} from "react-router-dom";
 import SessionApi from "./api/Session";
 
@@ -28,7 +29,7 @@ const Splash = () => {
         <div className={styles["content"]}>
           <div className={styles["header"]}>Welcome to Dialogic</div>
           <div className={styles["instruction"]}>
-            <button className={styles["instruction"]} onClick={onClick}>Click to start</button>
+            <Button size="large" onClick={onClick}>Click to start</Button>
           </div>
         </div>
       </div>
