@@ -11,6 +11,7 @@ from rest_framework import status, mixins, generics
 
 # Create your views here.
 
+@api_view(['GET'])
 def ping(request):
     if request.method == 'GET':
         return Response({"message": "pong"}, status=status.HTTP_200_OK)
@@ -31,7 +32,92 @@ class StudentDetailView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
         return self.retrieve(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+        return self.partial_update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+class TeacherView(mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = Teacher.objects.all()
+    serializer_class = TeacherSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+class TeacherDetailView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin, generics.GenericAPIView):
+    queryset = Teacher.objects.all()
+    serializer_class = TeacherSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+
+class RosterView(mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = Roster.objects.all()
+    serializer_class = RosterSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+class RosterDetailView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin, generics.GenericAPIView):
+    queryset = Roster.objects.all()
+    serializer_class = RosterSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+    
+class SessionView(mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = Session.objects.all()
+    serializer_class = SessionSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+class SessionDetailView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin, generics.GenericAPIView):
+    queryset = Session.objects.all()
+    serializer_class = SessionSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+class StudentSessionView(mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = StudentSession.objects.all()
+    serializer_class = StudentSessionSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+class StudentSessionDetailView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin, generics.GenericAPIView):
+    queryset = StudentSession.objects.all()
+    serializer_class = StudentSessionSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
