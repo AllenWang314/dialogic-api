@@ -4,7 +4,7 @@ import OuterButton from "./components/OuterButton";
 import Modal from "./components/Modal";
 import SeatButton from "./components/SeatButton";
 import { useState, useEffect } from "react";
-import Xarrow from "react-xarrows";
+import CurvedArrow from "./CurvedArrow";
 import { STUDENTS_FEW, STUDENTS_AVERAGE, STUDENTS_MORE, ANNOTATIONS } from "./constants.js";
 import React from "react";
 
@@ -71,18 +71,32 @@ const Home = () => {
   };
 
   // programatically generate lines
+
+  const computeCoords = (index) => {
+    const x = Math.sin(index * ((2 * Math.PI) / students.length)) * 300;
+    const y = Math.cos(index * ((2 * Math.PI) / students.length)) * 300;
+    return [x, y];
+  };
+
   const generateLines = () => {
     return lines.map((line, ind) => {
+      const [x1, y1] = computeCoords(line[0]);
+      const [x2, y2] = computeCoords(line[1]);
+
+      const mid_x = (x1 + x2) / 2;
+      const mid_y = (y1 + y2) / 2;
+
       return (
-        <Xarrow
+        <CurvedArrow
           key={ind}
-          start={line[0]}
-          end={line[1]}
-          curveness={0}
+          fromSelector={`[id='${line[0]}']`}
+          toSelector={`[id='${line[1]}']`}
           color={"#9DB5B2"}
-          startAnchor={"middle"}
-          endAnchor={"middle"}
-          animateDrawing={0.1}
+          width={2}
+          size={20}
+          middleY={-mid_y * 0.8}
+          middleX={-mid_x * 0.8}
+          dynamicUpdate="true"
         />
       );
     });
