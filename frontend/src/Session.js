@@ -13,7 +13,7 @@ import CurvedArrow from "./components/CurvedArrow";
 import OuterButton from "./components/OuterButton";
 import Modal from "./components/Modal";
 
-const DEFAULT_COUNT = 13;
+const DEFAULT_COUNT = 8;
 
 const Session = () => {
   const [seats, setSeats] = useState(
@@ -41,11 +41,25 @@ const Session = () => {
     }
   });
 
+  const beginDiscussion = () => {
+    setDiscussionState(true);
+    setSeats(getFilledSeats());
+  };
+
+  const getFilledSeats = () => {
+    return seats.filter(function (el) {
+      return el.student != null;
+    });
+  };
   const displayAddButtons = () => {
     return !discussionState && seats.length < 20;
   };
   const displayDeleteButtons = () => {
     return !discussionState && seats.length > 2;
+  };
+  const displayBeginButton = () => {
+    console.log(getFilledSeats().length);
+    return !discussionState && getFilledSeats().length > 1;
   };
   // modal listener outer button
   const undoEdge = () => {
@@ -108,6 +122,7 @@ const Session = () => {
           index={ind}
           student={obj}
           numStudents={students.length}
+          selected={selected}
           showName={discussionState}
         />
       );
@@ -243,10 +258,10 @@ const Session = () => {
               openModal={outerButtonClick}
             />
 
-            {!discussionState && (
+            {displayBeginButton() && (
               <button
                 style={{ position: "absolute", height: "50px", width: "100px" }}
-                onClick={() => setDiscussionState(true)}
+                onClick={() => beginDiscussion()}
               >
                 begin discussion
               </button>
