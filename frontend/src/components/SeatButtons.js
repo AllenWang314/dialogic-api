@@ -6,7 +6,7 @@ function SeatButton(props) {
   const turnVar = 1 / props.numStudents;
   const seatClick = (_event) => {
     if (props.deleteMode) {
-      props.onDelete();
+      props.onDelete(props.index);
     } else {
       props.setSelected(props.student.id);
     }
@@ -48,19 +48,7 @@ const SeatButtons = (props) => {
   const displayDeleteButtons = () => {
     return !props.discussionState && props.seats.length > 2;
   };
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      //if esc key was not pressed in combination with ctrl or alt or shift
-      const isNotCombinedKey = !(
-        event.ctrlKey ||
-        event.altKey ||
-        event.shiftKey
-      );
-      if (isNotCombinedKey) {
-        props.setSelected(null);
-      }
-    }
-  });
+
   return props.seats.map((student, ind) => {
     return (
       <SeatButton

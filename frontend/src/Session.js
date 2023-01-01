@@ -223,7 +223,7 @@ const Session = () => {
                   selected={selected}
                   setSelected={setSelected}
                   discussionState={discussionState}
-                  onDelete={() => deleteSeat()}
+                  onDelete={deleteSeat}
                 />
                 {displayAddButtons() && generatePlusButtons(seats)}
                 {generateOuterButtons(seats)}
