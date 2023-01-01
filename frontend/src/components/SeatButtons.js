@@ -1,5 +1,6 @@
-import cssstyles from "./SeatButton.module.css";
+import cssstyles from "./SeatButtons.module.css";
 import { AiOutlineClose } from "react-icons/ai";
+import React from "react";
 
 function SeatButton(props) {
   const turnVar = 1 / props.numStudents;
@@ -7,8 +8,6 @@ function SeatButton(props) {
     if (props.deleteMode) {
       props.onDelete();
     } else {
-      console.log(props.student);
-
       props.setSelected([...props.selected, props.student.id]);
     }
   };
@@ -19,7 +18,6 @@ function SeatButton(props) {
     395 -
     33.5 * props.numStudents +
     0.82 * props.numStudents * props.numStudents;
-  console.log(width, props.numStudents);
   // 1. translate horizontally to center, we adjust by width/2 to center
   // 2. translate vertically to center in circle
   // 3. rotate so that each div (dynamically) is facing the right direction
@@ -46,4 +44,38 @@ function SeatButton(props) {
   );
 }
 
-export default SeatButton;
+// programatically generate inner buttons
+const SeatButtons = (props) => {
+  const displayDeleteButtons = () => {
+    return !props.discussionState && props.seats.length > 2;
+  };
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      //if esc key was not pressed in combination with ctrl or alt or shift
+      const isNotCombinedKey = !(
+        event.ctrlKey ||
+        event.altKey ||
+        event.shiftKey
+      );
+      if (isNotCombinedKey) {
+        props.setSelected([]);
+      }
+    }
+  });
+  return props.seats.map((student, ind) => {
+    return (
+      <SeatButton
+        key={ind}
+        index={ind}
+        student={student}
+        numStudents={props.seats.length}
+        selected={props.selected}
+        deleteMode={displayDeleteButtons()}
+        setSelected={props.setSelected}
+        onDelete={props.onDelete}
+      />
+    );
+  });
+};
+
+export default SeatButtons;

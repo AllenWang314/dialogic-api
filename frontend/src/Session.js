@@ -1,20 +1,20 @@
 import styles from "./Session.module.css";
-import Seat from "./components/Seat";
+import Seats from "./components/Seats";
 import { useState, useEffect } from "react";
 import AddButton from "./components/AddButton";
-import SeatNameButton from "./components/SeatNameButton";
+import SeatNameButton from "./components/SeatNameButtons";
 import Roster from "./components/Roster";
 import { STUDENTS_MORE, ANNOTATIONS } from "./constants.js";
 import globalstyles from "./global.module.css";
 import Navbar from "./components/Navbar";
 import React from "react";
 import { useLocation, useParams } from "react-router-dom";
-import SeatButton from "./components/SeatButton";
-import CurvedArrow from "./components/CurvedArrow";
+import SeatButtons from "./components/SeatButtons";
 import OuterButton from "./components/OuterButton";
 import Modal from "./components/Modal";
 import RosterApi from "./api/Roster";
 import SessionApi from "./api/Session";
+import Arrows from "./components/Arrows";
 
 const DEFAULT_COUNT = 13;
 
@@ -29,7 +29,7 @@ const Session = () => {
   const [students, setStudents] = useState(null);
   const [discussionState, setDiscussionState] = useState(false); // map student id to student data from API
   const [selected, setSelected] = useState([]);
-  const [lines, setLines] = useState([]);
+  const [edges, setEdges] = useState([]);
 
   useEffect(() => {
     SessionApi.getSession(sessionId).then((res) => {
@@ -49,13 +49,14 @@ const Session = () => {
 
         // set seats based on session data and discussion state
         if (discussionState) {
-          setSeats(session.student_list.map((student_id) => {
-            return res.data.find((student) => student.id == student_id) 
-          })); 
+          setSeats(
+            session.student_list.map((student_id) => {
+              return res.data.find((student) => student.id == student_id);
+            })
+          );
         } else {
-          setSeats(Array(DEFAULT_COUNT).fill(null))
+          setSeats(Array(DEFAULT_COUNT).fill(null));
         }
-        
       });
     }
   }, [session]);
@@ -75,25 +76,24 @@ const Session = () => {
   });
 
   const beginDiscussion = () => {
-     SessionApi.updateSession(session.id, {
+    SessionApi.updateSession(session.id, {
       student_list: seats.filter(Boolean).map((seat) => {
         return seat.id;
       }),
-      start_time: Math.round(Date.now() / 1000)
+      start_time: Math.round(Date.now() / 1000),
     }).then((res) => {
       setDiscussionState(true);
       setSession(res.data);
-      setSeats(res.data.student_list.map((student_id) => {
-        return students.find((student) => student.id == student_id) 
-      }));
-    })
-   };
+      setSeats(
+        res.data.student_list.map((student_id) => {
+          return students.find((student) => student.id == student_id);
+        })
+      );
+    });
+  };
 
   const displayAddButtons = () => {
     return !discussionState && seats.length < 20;
-  };
-  const displayDeleteButtons = () => {
-    return !discussionState && seats.length > 2;
   };
 
   const displayBeginButton = () => {
@@ -102,8 +102,8 @@ const Session = () => {
 
   // modal listener outer button
   const undoEdge = () => {
-    lines.pop();
-    setLines(lines);
+    edges.pop();
+    setEdges(edges);
     setSelected([]);
   };
 
@@ -115,10 +115,10 @@ const Session = () => {
   // listener for drawing lines
   useEffect(() => {
     if (selected.length === 2) {
-      setLines([...lines, selected]);
+      setEdges([...edges, selected]);
       setSelected([]);
     }
-  }, [selected, lines]);
+  }, [selected, edges]);
 
   const addSeat = (ind) => {
     // adds a seat in students after index ind
@@ -132,10 +132,8 @@ const Session = () => {
   const deleteSeat = (ind) => {
     // deletes seat at index ind
     // note that 0th index always rendered at center top of page
-    if (displayDeleteButtons()) {
-      seats.splice(ind, 1);
-      setSeats([...seats]);
-    }
+    seats.splice(ind, 1);
+    setSeats([...seats]);
   };
 
   const assignSeat = (student_id, ind) => {
@@ -152,22 +150,6 @@ const Session = () => {
       seats.splice(ind, 1, null);
       setSeats([...seats]);
     }
-  };
-
-  // programatically generate seat graphic
-  const generateSeats = (students) => {
-    return students.map((obj, ind) => {
-      return (
-        <Seat
-          key={ind}
-          index={ind}
-          student={obj}
-          numStudents={students.length}
-          selected={selected}
-          showName={discussionState}
-        />
-      );
-    });
   };
 
   // programatically generate plus buttons
@@ -187,25 +169,6 @@ const Session = () => {
     });
   };
 
-  // programatically generate inner buttons
-  const generateInnerButtons = (students) => {
-    return students.map((obj, ind) => {
-      return (
-        <SeatButton
-          key={ind}
-          index={ind}
-          student={obj}
-          numStudents={students.length}
-          selected={selected}
-          deleteMode={displayDeleteButtons()}
-          setSelected={setSelected}
-          onDelete={() => {
-            deleteSeat(ind);
-          }}
-        />
-      );
-    });
-  };
   const generateOuterButtons = (students) => {
     return students.map((obj, ind) => {
       if (!discussionState) {
@@ -239,40 +202,7 @@ const Session = () => {
     });
   };
 
-  const computeCoords = (index) => {
-    const x = Math.sin(index * ((2 * Math.PI) / seats.length)) * 300;
-    const y = Math.cos(index * ((2 * Math.PI) / seats.length)) * 300;
-    return [x, y];
-  };
-
-  const generateLines = () => {
-    return lines.map((line, ind) => {
-      const [x1, y1] = computeCoords(line[0]);
-      const [x2, y2] = computeCoords(line[1]);
-
-      const mid_x = (x1 + x2) / 2;
-      const mid_y = (y1 + y2) / 2;
-      const seatIndex1 = seats.findIndex((student) => student.id == line[0]);
-      const seatIndex2 = seats.findIndex((student) => student.id == line[1]);
-      console.log(seatIndex1, seatIndex2);
-
-      return (
-        <CurvedArrow
-          key={ind}
-          fromSelector={`[id='${seatIndex1}']`}
-          toSelector={`[id='${seatIndex2}']`}
-          color={"#9DB5B2"}
-          width={2}
-          size={15}
-          middleY={-mid_y * 0.8}
-          middleX={-mid_x * 0.8}
-          dynamicUpdate="true"
-        />
-      );
-    });
-  };
-
-  if (students && roster && seats) {
+  if (students && roster) {
     return (
       <>
         <div className={globalstyles["App"]}>
@@ -287,11 +217,21 @@ const Session = () => {
                 />
               )}
               <div className={styles["circle"]}>
-                {generateSeats(seats)}
-                {generateInnerButtons(seats)}
+                <Seats
+                  seats={seats}
+                  selected={selected[0]}
+                  discussionState={discussionState}
+                />
+                <SeatButtons
+                  seats={seats}
+                  selected={selected}
+                  setSelected={setSelected}
+                  discussionState={discussionState}
+                  onDelete={() => deleteSeat()}
+                />
                 {displayAddButtons() && generatePlusButtons(seats)}
                 {generateOuterButtons(seats)}
-                {generateLines()}
+                <Arrows seats={seats} edges={edges} />
               </div>
               <Modal
                 student={annotationModalStudent}

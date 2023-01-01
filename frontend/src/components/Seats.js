@@ -1,4 +1,5 @@
-import cssstyles from "./Seat.module.css";
+import React from "react";
+import cssstyles from "./Seats.module.css";
 
 const Seat = (props) => {
   // get Name and last initial from full name
@@ -10,12 +11,13 @@ const Seat = (props) => {
     }
     return "";
   };
+  console.log(props.selected, props.student);
   // STROKE_FRACTION is a magic number we picked that
   // made the UI look nice
   const turnVar = 1 / props.numStudents;
   const STROKE_FRACTION = 0.7;
   const STROKE_COLOR =
-    props.showName && props.selected[0] == props.student?.id
+    props.showName && props.selected == props.student?.id
       ? "#FFFFFF"
       : "#D3D5D4";
   const styles = {
@@ -54,4 +56,20 @@ const Seat = (props) => {
   );
 };
 
-export default Seat;
+// programatically generate seat graphic
+const Seats = (props) => {
+  return props.seats.map((student, ind) => {
+    return (
+      <Seat
+        key={ind}
+        index={ind}
+        student={student}
+        numStudents={props.seats.length}
+        selected={props.selected}
+        showName={props.discussionState}
+      />
+    );
+  });
+};
+
+export default Seats;
