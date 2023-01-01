@@ -1,0 +1,27 @@
+.content {
+  color: #D3D5D4;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 270px;
+  gap: 30px;
+  animation: fadeIn 1s;
+}
+
+.header {
+  color: #D3D5D4;
+  font-size: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.instruction {
+  font-size: 20px;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0.25; }
+  100% { opacity: 1; }
+}

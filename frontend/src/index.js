@@ -1,13 +1,48 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Route,
+  Link,
+} from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
+import Session from './Session';
+import Splash from './Splash';
+
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Splash />,
+  },
+  {
+    path: "/session",
+    element: <Session/>,
+  },
+  {
+    path: "/summary",
+    element: (
+      <div>
+        <h1>Summary page</h1>
+      </div>
+    ),
+  },
+  {
+    path: "/summary",
+    element: (
+      <div>
+        <h1>Survey page</h1>
+      </div>
+    ),
+  },
+]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 

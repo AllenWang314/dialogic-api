@@ -39,6 +39,10 @@
   padding: 20px;
 }
 
+.page-wrapper {
+  padding-top: 20px;
+}
+
 /* disable interaction on small screens */
 @media (max-width: 700px) {
   .small-screen {

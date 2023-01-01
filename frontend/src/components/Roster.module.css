@@ -6,21 +6,30 @@
     border: 1px solid #D3D5D4;
     border-radius: 5px;
     cursor: grab;
-
+    text-align: center;
+    width: 38%;
 }  
 
 .roster {
     position: absolute;
-    left: 5%;
-    top: 10%;
+    left: 30px;
+    top: 15%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid #D3D5D4;
+    border-radius: 5px;
+    padding: 15px;
+    width: 280px;
 }
 
 .classList {
-    border: 1px solid #D3D5D4;
-    border-radius: 5px;
-    padding: 30px;
+    display: flex;
+    flex-wrap: wrap;
 }
+
 .header{
     color: #D3D5D4;
     font-size: 20px;
+    margin-left: 10px;
 }

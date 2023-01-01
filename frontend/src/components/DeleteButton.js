@@ -20,7 +20,7 @@ function SeatButton(props) {
   const styles = {
     transform: `translate(${300 - width / 2}px) translateY(${300 - 10}px) rotate(${
       turnVar * props.index
-    }turn) translateY(${-260}px)`,
+    }turn) translateY(${-257}px)`,
     width: `${width}px`,
   };
 

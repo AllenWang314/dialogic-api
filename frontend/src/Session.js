@@ -1,27 +1,18 @@
-import styles from "./Begin.module.css";
+import styles from "./Session.module.css";
 import Seat from "./components/Seat";
-import Modal from "./components/Modal";
 import DeleteButton from "./components/DeleteButton";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import AddButton from "./components/AddButton";
 import SeatName from "./components/SeatName";
 import Roster from "./components/Roster";
-import { STUDENTS_FEW, STUDENTS_AVERAGE, STUDENTS_MORE, ANNOTATIONS } from "./constants.js";
+import { STUDENTS_AVERAGE } from "./constants.js";
+import globalstyles from "./global.module.css";
+import Navbar from "./components/Navbar";
 
-const Begin = () => {
-  const DEFAULT_COUNT = 13;
-  const DEFAULT_STATE = [
-    { student: null },
-    { student: null },
-    { student: null },
-    { student: null },
-    { student: null },
-    { student: null },
-    { student: null },
-    { student: null },
-    { student: null },
-  ];
-  const [seats, setSeats] = useState(DEFAULT_STATE); // list of student ids
+const DEFAULT_COUNT = 13;
+
+const Session = () => {
+  const [seats, setSeats] = useState(Array(DEFAULT_COUNT).fill({ student: null })); // list of student ids
   const [students, setStudents] = useState(STUDENTS_AVERAGE); // map student id to student data from API
 
   const addSeat = (ind) => {
@@ -107,6 +98,10 @@ const Begin = () => {
     });
   };
   return (
+    <>
+    <div className={globalstyles["App"]}>
+    <Navbar />
+    <div className={globalstyles["page-wrapper"]}>
     <div className={styles["begin"]}>
       <Roster onRemove={unassignSeat} students={STUDENTS_AVERAGE} seats={seats} />
       <div className={styles["circle"]}>
@@ -116,7 +111,14 @@ const Begin = () => {
         {generateOuterButtons(seats.map((student) => student.student))}
       </div>
     </div>
+    </div>
+      </div>
+      <div className={globalstyles["small-screen"]}>
+        Your screen is too small to view our work! Please switch over to an ipad or laptop. -The
+        Dialogic Team
+      </div>
+      </>
   );
 };
 
-export default Begin;
+export default Session;
