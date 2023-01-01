@@ -99,25 +99,25 @@ const Session = () => {
   };
   return (
     <>
-    <div className={globalstyles["App"]}>
-    <Navbar />
-    <div className={globalstyles["page-wrapper"]}>
-    <div className={styles["begin"]}>
-      <Roster onRemove={unassignSeat} students={STUDENTS_AVERAGE} seats={seats} />
-      <div className={styles["circle"]}>
-        {generateSeats(seats.map((student) => student.student))}
-        {generateInnerButtons(seats)}
-        {generatePlusButtons(seats)}
-        {generateOuterButtons(seats.map((student) => student.student))}
-      </div>
-    </div>
-    </div>
+      <div className={globalstyles["App"]}>
+        <Navbar />
+        <div className={globalstyles["page-wrapper"]}>
+          <div className={styles["begin"]}>
+            <Roster onRemove={unassignSeat} students={STUDENTS_AVERAGE} seats={seats} />
+            <div className={styles["circle"]}>
+              {generateSeats(seats.map((student) => student.student))}
+              {generateInnerButtons(seats)}
+              {generatePlusButtons(seats)}
+              {generateOuterButtons(seats.map((student) => student.student))}
+            </div>
+          </div>
+        </div>
       </div>
       <div className={globalstyles["small-screen"]}>
         Your screen is too small to view our work! Please switch over to an ipad or laptop. -The
         Dialogic Team
       </div>
-      </>
+    </>
   );
 };
 
