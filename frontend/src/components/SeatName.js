@@ -40,7 +40,7 @@ const SeatName = (props) => {
   // the bottom names are flipped
   const flipName = props.index > props.numStudents / 4 && props.index < (props.numStudents * 3) / 4;
   const flipTransform = flipName ? "scaleY(-1) scaleX(-1)" : "";
-  const cursorStyle = props.student?.name ? "grab" : "default";
+  const cursorStyle = props.student?.name && props.adjustMode ? "grab" : "default";
   // programatically inject styles
   const styles = {
     transform:
@@ -49,13 +49,14 @@ const SeatName = (props) => {
       }turn) translateY(${-300}px)` + flipTransform,
     width: `${width}px`,
     cursor: cursorStyle,
+    border: props.adjustMode ? "1px solid white" : "none",
   };
 
   return (
     <div
       className={cssstyles["seatname-button"]}
       style={styles}
-      draggable="true"
+      draggable={props.adjustMode}
       onDragOver={allowDrop}
       onDragStart={drag}
       onDrop={drop}
