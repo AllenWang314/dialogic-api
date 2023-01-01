@@ -34,7 +34,7 @@ const Session = () => {
   // discussion state: "initial" "discussing" "adjust" "finished"
   const [discussionState, setDiscussionState] = useState("initial"); // map student id to student data from API
   const [selected, setSelected] = useState(null);
-  const [edges, setEdges] = useState([]);
+  const [edges, setEdges] = useState(null);
 
   useEffect(() => {
     SessionApi.getSession(sessionId).then((res) => {
@@ -182,7 +182,7 @@ const Session = () => {
   }, [selected]);
 
   useEffect(() => {
-    if (edges.length > 1) {
+    if (edges !== null) {
       SessionApi.updateSession(sessionId, {
         graph: edges,
         notes: notes,
