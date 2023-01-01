@@ -1,5 +1,6 @@
 import "./OuterButton.css";
 import Annotation from "./Annotation.js";
+import React from "react";
 
 const OuterButton = (props) => {
   const turnVar = 1 / props.numStudents;
@@ -31,12 +32,12 @@ const OuterButton = (props) => {
     <div className="outer-button" onClick={seatClick} style={styles}>
       {props.showAnnotations && (
         <>
-          <Annotation letter="T" count={props.annotationMap[props.student.student_id]["T"]} />
-          <Annotation letter="A" count={props.annotationMap[props.student.student_id]["A"]} />
-          <Annotation letter="C" count={props.annotationMap[props.student.student_id]["C"]} />
-          <Annotation letter="Q" count={props.annotationMap[props.student.student_id]["Q"]} />
-          <Annotation letter="R" count={props.annotationMap[props.student.student_id]["R"]} />
-          <Annotation letter="F" count={props.annotationMap[props.student.student_id]["F"]} />
+          <Annotation letter="T" count={props.annotationMap[props.student.id]["T"]} />
+          <Annotation letter="A" count={props.annotationMap[props.student.id]["A"]} />
+          <Annotation letter="C" count={props.annotationMap[props.student.id]["C"]} />
+          <Annotation letter="Q" count={props.annotationMap[props.student.id]["Q"]} />
+          <Annotation letter="R" count={props.annotationMap[props.student.id]["R"]} />
+          <Annotation letter="F" count={props.annotationMap[props.student.id]["F"]} />
         </>
       )}
     </div>

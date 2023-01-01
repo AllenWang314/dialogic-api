@@ -1,14 +1,13 @@
 import "./Home.css";
 import Seat from "./components/Seat";
 import OuterButton from "./components/OuterButton";
-import SeatName from "./components/SeatName";
 import Modal from "./components/Modal";
 import SeatButton from "./components/SeatButton";
 import { useState, useEffect } from "react";
 import Xarrow from "react-xarrows";
 import { STUDENTS_FEW, STUDENTS_AVERAGE, STUDENTS_MORE, ANNOTATIONS } from "./constants.js";
-import AddButton from "./components/AddButton";
-import Roster from "./components/Roster";
+import React from "react";
+
 const Home = () => {
   const [annotationModalStudent, setAnnotationModalStudent] = useState(null);
   const [showAnnotations, setShowAnnotations] = useState(true);
@@ -41,7 +40,7 @@ const Home = () => {
   const generateOuterButtons = (students) => {
     return students.map((obj, ind) => {
       return (
-        <SeatName
+        <OuterButton
           key={ind}
           index={ind}
           student={obj}
@@ -66,7 +65,6 @@ const Home = () => {
           numStudents={students.length}
           selected={selected}
           setSelected={setSelected}
-          deleteMode={true}
         />
       );
     });
@@ -92,8 +90,6 @@ const Home = () => {
 
   return (
     <div id="home">
-      <div className="roster"> {Roster(students)}</div>
-
       <div className="circle">
         {generateOuterButtons(students)}
         {generateSeats(students)}
