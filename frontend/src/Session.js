@@ -23,7 +23,7 @@ const Session = () => {
   const [showAnnotations, setShowAnnotations] = useState(true);
   const [annotationMap, setAnnotationMap] = useState(ANNOTATIONS);
   const [students, setStudents] = useState(STUDENTS_MORE); // map student id to student data from API
-  const [startDiscussion, setStartDiscussion] = useState(false); // map student id to student data from API
+  const [discussionState, setDiscussionState] = useState(false); // map student id to student data from API
   const [selected, setSelected] = useState([]);
   const [lines, setLines] = useState([]);
 
@@ -41,6 +41,12 @@ const Session = () => {
     }
   });
 
+  const displayAddButtons = () => {
+    return !discussionState && seats.length < 20;
+  };
+  const displayDeleteButtons = () => {
+    return !discussionState && seats.length > 2;
+  };
   // modal listener outer button
   const undoEdge = () => {
     lines.pop();
@@ -64,15 +70,19 @@ const Session = () => {
   const addSeat = (ind) => {
     // adds a seat in students after index ind
     // note that 0th index always rendered at center top of page
-    seats.splice(ind + 1, 0, { student: null });
-    setSeats([...seats]);
+    if (displayAddButtons()) {
+      seats.splice(ind + 1, 0, { student: null });
+      setSeats([...seats]);
+    }
   };
 
   const deleteSeat = (ind) => {
     // deletes seat at index ind
     // note that 0th index always rendered at center top of page
-    seats.splice(ind, 1);
-    setSeats([...seats]);
+    if (displayDeleteButtons()) {
+      seats.splice(ind, 1);
+      setSeats([...seats]);
+    }
   };
 
   const assignSeat = (student_id, ind) => {
@@ -98,7 +108,7 @@ const Session = () => {
           index={ind}
           student={obj}
           numStudents={students.length}
-          showName={startDiscussion}
+          showName={discussionState}
         />
       );
     });
@@ -131,7 +141,7 @@ const Session = () => {
           student={obj}
           numStudents={students.length}
           selected={selected}
-          deleteMode={!startDiscussion}
+          deleteMode={displayDeleteButtons()}
           setSelected={setSelected}
           onDelete={() => {
             deleteSeat(ind);
@@ -142,13 +152,13 @@ const Session = () => {
   };
   const generateOuterButtons = (students) => {
     return students.map((obj, ind) => {
-      if (!startDiscussion) {
+      if (!discussionState) {
         return (
           <SeatNameButton
             key={ind}
             index={ind}
             student={obj}
-            adjustMode={!startDiscussion}
+            adjustMode={!discussionState}
             numStudents={students.length}
             onAssign={(student_id) => {
               assignSeat(student_id, ind);
@@ -194,7 +204,7 @@ const Session = () => {
           toSelector={`[id='${line[1]}']`}
           color={"#9DB5B2"}
           width={2}
-          size={20}
+          size={15}
           middleY={-mid_y * 0.8}
           middleX={-mid_x * 0.8}
           dynamicUpdate="true"
@@ -209,7 +219,7 @@ const Session = () => {
         <Navbar />
         <div className={globalstyles["page-wrapper"]}>
           <div className={styles["begin"]}>
-            {!startDiscussion && (
+            {!discussionState && (
               <Roster
                 onRemove={unassignSeat}
                 students={students}
@@ -219,7 +229,7 @@ const Session = () => {
             <div className={styles["circle"]}>
               {generateSeats(seats.map((student) => student.student))}
               {generateInnerButtons(seats)}
-              {!startDiscussion && generatePlusButtons(seats)}
+              {displayAddButtons() && generatePlusButtons(seats)}
               {generateOuterButtons(seats.map((student) => student.student))}
               {generateLines()}
             </div>
@@ -233,15 +243,15 @@ const Session = () => {
               openModal={outerButtonClick}
             />
 
-            {!startDiscussion && (
+            {!discussionState && (
               <button
                 style={{ position: "absolute", height: "50px", width: "100px" }}
-                onClick={() => setStartDiscussion(true)}
+                onClick={() => setDiscussionState(true)}
               >
                 begin discussion
               </button>
             )}
-            {startDiscussion && (
+            {discussionState && (
               <button
                 style={{
                   position: "absolute",
@@ -255,7 +265,7 @@ const Session = () => {
               </button>
             )}
           </div>
-          {startDiscussion && (
+          {discussionState && (
             <div className={styles["annotations-toggle"]}>
               Annotations {showAnnotations ? "On" : "Off"}
               <label className="switch">

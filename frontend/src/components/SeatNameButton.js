@@ -30,7 +30,7 @@ const SeatNameButton = (props) => {
   }
   // this part is where we did linear regression over what
   // looked nice to find the div width
-  const width = 220 - 9 * props.numStudents;
+  const width = 240 - 9 * props.numStudents;
 
   // the bottom names are flipped
   const flipName =

@@ -14,7 +14,7 @@ function SeatButton(props) {
 
   // this part is where we did linear regression over what
   // looked nice to find the div width
-  const width = 240 - 9.5 * props.numStudents;
+  const width = 240 - 9 * props.numStudents;
 
   // 1. translate horizontally to center, we adjust by width/2 to center
   // 2. translate vertically to center in circle
