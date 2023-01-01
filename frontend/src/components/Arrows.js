@@ -9,17 +9,17 @@ const computeCoords = (index, numSeats) => {
 
 const Arrows = (props) => {
   return props.edges.map((edge, ind) => {
-    const [x1, y1] = computeCoords(edge[0], props.seats.length);
-    const [x2, y2] = computeCoords(edge[1], props.seats.length);
-
-    const mid_x = (x1 + x2) / 2;
-    const mid_y = (y1 + y2) / 2;
     const seatIndex1 = props.seats.findIndex(
       (student) => student.id == edge[0]
     );
     const seatIndex2 = props.seats.findIndex(
       (student) => student.id == edge[1]
     );
+    const [x1, y1] = computeCoords(seatIndex1, props.seats.length);
+    const [x2, y2] = computeCoords(seatIndex2, props.seats.length);
+
+    const mid_x = (x1 + x2) / 2;
+    const mid_y = (y1 + y2) / 2;
 
     return (
       <CurvedArrow

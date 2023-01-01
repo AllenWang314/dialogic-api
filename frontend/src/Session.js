@@ -61,20 +61,6 @@ const Session = () => {
     }
   }, [session]);
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      //if esc key was not pressed in combination with ctrl or alt or shift
-      const isNotCombinedKey = !(
-        event.ctrlKey ||
-        event.altKey ||
-        event.shiftKey
-      );
-      if (isNotCombinedKey) {
-        setSelected([]);
-      }
-    }
-  });
-
   const beginDiscussion = () => {
     SessionApi.updateSession(session.id, {
       student_list: seats.filter(Boolean).map((seat) => {
@@ -100,7 +86,6 @@ const Session = () => {
     return !discussionState && seats.filter(Boolean).length > 1;
   };
 
-  // modal listener outer button
   const undoEdge = () => {
     edges.pop();
     setEdges(edges);
@@ -269,20 +254,6 @@ const Session = () => {
                 </button>
               )}
             </div>
-
-            {discussionState && (
-              <button
-                style={{
-                  position: "absolute",
-                  height: "50px",
-                  width: "100px",
-                  bottom: "10%",
-                }}
-                onClick={() => undoEdge()}
-              >
-                undo
-              </button>
-            )}
           </div>
         </div>
         <div className={globalstyles["small-screen"]}>
