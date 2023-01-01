@@ -54,10 +54,6 @@ const OuterButton = (props) => {
             letter="R"
             count={props.annotationMap[props.student.id]["R"]}
           />
-          <Annotation
-            letter="F"
-            count={props.annotationMap[props.student.id]["F"]}
-          />
         </>
       )}
     </div>

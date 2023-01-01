@@ -23,15 +23,15 @@ const Session = () => {
   let { sessionId } = useParams();
 
   const [seats, setSeats] = useState(
-    Array(DEFAULT_COUNT).fill({ student: null })
+    Array(DEFAULT_COUNT).fill(null)
   ); // list of student ids
   const [annotationModalStudent, setAnnotationModalStudent] = useState(null);
   const [annotationMap, setAnnotationMap] = useState(ANNOTATIONS);
   const [session, setSession] = useState(null);
   const [roster, setRoster] = useState(null);
   const [students, setStudents] = useState(null);
-  
-  const [startDiscussion, setStartDiscussion] = useState(false); // map student id to student data from API
+  const [startDiscussion, setStartDiscussion] = useState(false);
+  const [discussionState, setDiscussionState] = useState(false); // map student id to student data from API
   const [selected, setSelected] = useState([]);
   const [lines, setLines] = useState([]);
 
@@ -71,6 +71,23 @@ const Session = () => {
     }
   });
 
+  const beginDiscussion = () => {
+    setDiscussionState(true);
+    setSeats(getFilledSeats());
+  };
+
+  const getFilledSeats = () => {
+    return seats.filter(Boolean);
+  };
+  const displayAddButtons = () => {
+    return !discussionState && seats.length < 20;
+  };
+  const displayDeleteButtons = () => {
+    return !discussionState && seats.length > 2;
+  };
+  const displayBeginButton = () => {
+    return !discussionState && getFilledSeats().length > 1;
+  };
   // modal listener outer button
   const undoEdge = () => {
     lines.pop();
@@ -94,27 +111,33 @@ const Session = () => {
   const addSeat = (ind) => {
     // adds a seat in students after index ind
     // note that 0th index always rendered at center top of page
-    seats.splice(ind + 1, 0, { student: null });
-    setSeats([...seats]);
+    if (displayAddButtons()) {
+      seats.splice(ind + 1, 0, null);
+      setSeats([...seats]);
+    }
   };
 
   const deleteSeat = (ind) => {
     // deletes seat at index ind
     // note that 0th index always rendered at center top of page
-    seats.splice(ind, 1);
-    setSeats([...seats]);
+    if (displayDeleteButtons()) {
+      seats.splice(ind, 1);
+      setSeats([...seats]);
+    }
   };
 
   const assignSeat = (student_id, ind) => {
-    seats.splice(ind, 1, {
-      student: students.find((student) => student.id == student_id),
-    });
+    seats.splice(
+      ind,
+      1,
+      students.find((student) => student.id == student_id)
+    );
     setSeats([...seats]);
   };
 
   const unassignSeat = (ind) => {
     if (ind) {
-      seats.splice(ind, 1, { student: null });
+      seats.splice(ind, 1, null);
       setSeats([...seats]);
     }
   };
@@ -128,7 +151,8 @@ const Session = () => {
           index={ind}
           student={obj}
           numStudents={students.length}
-          showName={startDiscussion}
+          selected={selected}
+          showName={discussionState}
         />
       );
     });
@@ -161,7 +185,7 @@ const Session = () => {
           student={obj}
           numStudents={students.length}
           selected={selected}
-          deleteMode={!startDiscussion}
+          deleteMode={displayDeleteButtons()}
           setSelected={setSelected}
           onDelete={() => {
             deleteSeat(ind);
@@ -172,13 +196,13 @@ const Session = () => {
   };
   const generateOuterButtons = (students) => {
     return students.map((obj, ind) => {
-      if (!startDiscussion) {
+      if (!discussionState) {
         return (
           <SeatNameButton
             key={ind}
             index={ind}
             student={obj}
-            adjustMode={!startDiscussion}
+            adjustMode={!discussionState}
             numStudents={students.length}
             onAssign={(student_id) => {
               assignSeat(student_id, ind);
@@ -216,15 +240,18 @@ const Session = () => {
 
       const mid_x = (x1 + x2) / 2;
       const mid_y = (y1 + y2) / 2;
+      const seatIndex1 = seats.findIndex((student) => student.id == line[0]);
+      const seatIndex2 = seats.findIndex((student) => student.id == line[1]);
+      console.log(seatIndex1, seatIndex2);
 
       return (
         <CurvedArrow
           key={ind}
-          fromSelector={`[id='${line[0]}']`}
-          toSelector={`[id='${line[1]}']`}
+          fromSelector={`[id='${seatIndex1}']`}
+          toSelector={`[id='${seatIndex2}']`}
           color={"#9DB5B2"}
           width={2}
-          size={20}
+          size={15}
           middleY={-mid_y * 0.8}
           middleX={-mid_x * 0.8}
           dynamicUpdate="true"
@@ -234,48 +261,59 @@ const Session = () => {
   };
 
   if (students && roster) {
-    return (
-      <>
-        <div className={globalstyles["App"]}>
-          <Navbar />
-          <div className={globalstyles["page-wrapper"]}>
-            <div className={styles["begin"]}>
-              {!startDiscussion && (
-                <Roster
-                  onRemove={unassignSeat}
-                  students={students}
-                  seats={seats}
-                />
-              )}
-              <div className={styles["circle"]}>
-                {generateSeats(seats.map((student) => student.student))}
-                {generateInnerButtons(seats)}
-                {!startDiscussion && generatePlusButtons(seats)}
-                {generateOuterButtons(seats.map((student) => student.student))}
-                {generateLines()}
-              </div>
-              <Modal
-                student={annotationModalStudent}
-                annotationMap={annotationMap}
-                setAnnotationMap={setAnnotationMap}
-                closeModal={() => {
-                  setAnnotationModalStudent(null);
-                }}
-                openModal={outerButtonClick}
+  return (
+    <>
+      <div className={globalstyles["App"]}>
+        <Navbar />
+        <div className={globalstyles["page-wrapper"]}>
+          <div className={styles["begin"]}>
+            {!discussionState && (
+              <Roster
+                onRemove={unassignSeat}
+                students={students}
+                seats={seats}
               />
+            )}
+            <div className={styles["circle"]}>
+              {generateSeats(seats)}
+              {generateInnerButtons(seats)}
+              {displayAddButtons() && generatePlusButtons(seats)}
+              {generateOuterButtons(seats)}
+              {generateLines()}
+            </div>
+            <Modal
+              student={annotationModalStudent}
+              annotationMap={annotationMap}
+              setAnnotationMap={setAnnotationMap}
+              closeModal={() => {
+                setAnnotationModalStudent(null);
+              }}
+              openModal={outerButtonClick}
+            />
 
-              {!startDiscussion && (
-                <button
-                  style={{
-                    position: "absolute",
-                    height: "50px",
-                    width: "100px",
-                  }}
-                  onClick={() => setStartDiscussion(true)}
-                >
-                  begin discussion
-                </button>
-              )}
+            {displayBeginButton() && (
+              <button
+                style={{ position: "absolute", height: "50px", width: "100px" }}
+                onClick={() => beginDiscussion()}
+              >
+                begin discussion
+              </button>
+            )}
+            {discussionState && (
+              <button
+                style={{
+                  position: "absolute",
+                  height: "50px",
+                  width: "100px",
+                  bottom: "10%",
+                }}
+                onClick={() => undoEdge()}
+              >
+                undo
+              </button>
+            )}
+          </div>
+          
               {startDiscussion && (
                 <button
                   style={{
@@ -291,7 +329,6 @@ const Session = () => {
               )}
             </div>
           </div>
-        </div>
         <div className={globalstyles["small-screen"]}>
           Your screen is too small to view our work! Please switch over to an
           ipad or laptop. -The Dialogic Team

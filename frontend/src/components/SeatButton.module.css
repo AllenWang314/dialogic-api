@@ -11,8 +11,3 @@
 .seat-button:hover {
   cursor: pointer;
 }
-
-.seat-button:hover {
-  border: 1px solid white;
-  cursor: pointer;
-}
