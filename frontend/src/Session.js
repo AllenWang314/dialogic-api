@@ -47,8 +47,8 @@ const Session = () => {
         setSecondsElapsed(
           Math.round((Date.now() - res.data.start_time * 1000) / 1000)
         );
-        setEdges(res.data.graph);
       }
+      setEdges(res.data.graph);
     });
   }, []);
 
@@ -182,7 +182,7 @@ const Session = () => {
   }, [selected]);
 
   useEffect(() => {
-    if (edges !== null) {
+    if (edges) {
       SessionApi.updateSession(sessionId, {
         graph: edges,
         notes: notes,

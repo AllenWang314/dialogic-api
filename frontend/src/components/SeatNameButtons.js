@@ -31,7 +31,7 @@ const SeatNameButton = (props) => {
   // this part is where we did linear regression over what
   // looked nice to find the div width
   const width = 240 - 9 * props.numStudents;
-
+  var dragging = false;
   // the bottom names are flipped
   const flipName =
     props.index > props.numStudents / 4 &&
@@ -40,14 +40,16 @@ const SeatNameButton = (props) => {
   const cursorStyle =
     props.student?.name && props.adjustMode ? "grab" : "default";
   // programatically inject styles
+  // document.addEventListener("drag", (event) => {
+  //   z_index = 10;
+  // });
   const styles = {
     transform:
-      `translate(${300 - width / 2}px) translateY(${300 - 10}px) rotate(${
+      `translate(${300 - width / 2}px) translateY(${300 - 25}px) rotate(${
         turnVar * props.index
-      }turn) translateY(${-285}px)` + flipTransform,
+      }turn) translateY(${-280}px)` + flipTransform,
     width: `${width}px`,
     cursor: cursorStyle,
-    border: props.adjustMode ? "1px solid white" : "none",
   };
 
   return (
@@ -59,7 +61,15 @@ const SeatNameButton = (props) => {
       onDragStart={drag}
       onDrop={drop}
     >
-      <div className={cssstyles["name"]}> {getName(props.student)}</div>
+      <div
+        className={cssstyles["name"]}
+        style={{
+          width: `${width}px`,
+          border: props.adjustMode ? "1px solid white" : "none",
+        }}
+      >
+        {getName(props.student)}
+      </div>
     </div>
   );
 };

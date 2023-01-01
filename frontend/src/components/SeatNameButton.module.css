@@ -3,18 +3,25 @@
     grid-area: layer;
     display: flex;
     grid-template-areas: "layer";
-    height: 30px;
+    height: 60px;
     justify-content: center;
     align-items: center;
     position: relative;
-    z-index:10;
+    z-index:0;
     flex-direction: row;
     gap: 3px;
     border-radius: 5px;
-
+    /* border: 1px solid #D3D5D4; */
 }
 
 .name {
     color: #D3D5D4;
-    height: 18px;
+    height: 30px;
+    align-items: center;
+    line-height: 30px;
+    margin-bottom: 10px;
+    border: 1px solid #D3D5D4;
+    text-align: center;
+    border-radius: 5px;
+
 }
