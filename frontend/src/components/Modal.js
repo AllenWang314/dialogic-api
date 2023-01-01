@@ -1,3 +1,4 @@
+import React from "react";
 import "./Modal.css";
 
 const Modal = (props) => {
@@ -11,16 +12,16 @@ const Modal = (props) => {
     event.preventDefault();
     event.stopPropagation();
     return false;
-  }
+  };
 
   // use props to set new annotations in parent component
   const changed = (letter, val) => {
-    const annotations = props.annotationMap[props.student.student_id];
-    const newAnnotations = {...annotations, [letter]: val}
-    console.log(annotations)
-    console.log(newAnnotations)
-    props.setAnnotationMap({...props.annotationMap, [props.student.student_id]: newAnnotations})
-  }
+    const annotations = props.annotationMap[props.student.id];
+    const newAnnotations = { ...annotations, [letter]: val };
+    console.log(annotations);
+    console.log(newAnnotations);
+    props.setAnnotationMap({ ...props.annotationMap, [props.student.id]: newAnnotations });
+  };
 
   // annotations save automatically on edit, the save button just closes the modal
   return (
@@ -34,20 +35,76 @@ const Modal = (props) => {
         </div>
         <div className="annotation-modal-body">
           <div className="annotation-row">
-            <div>T: <input onChange={(event) => {changed("T", event.target.value)}} type="number" value={props.annotationMap[props.student.student_id]["T"]}></input></div>
-            <div>A: <input onChange={(event) => {changed("A", event.target.value)}} type="number" value={props.annotationMap[props.student.student_id]["A"]}></input></div>
-            <div>C: <input onChange={(event) => {changed("C", event.target.value)}} type="number" value={props.annotationMap[props.student.student_id]["C"]}></input></div>
+            <div>
+              T:
+              <input
+                onChange={(event) => {
+                  changed("T", event.target.value);
+                }}
+                type="number"
+                value={props.annotationMap[props.student.id]["T"]}
+              ></input>
+            </div>
+            <div>
+              A:
+              <input
+                onChange={(event) => {
+                  changed("A", event.target.value);
+                }}
+                type="number"
+                value={props.annotationMap[props.student.id]["A"]}
+              ></input>
+            </div>
+            <div>
+              C:
+              <input
+                onChange={(event) => {
+                  changed("C", event.target.value);
+                }}
+                type="number"
+                value={props.annotationMap[props.student.id]["C"]}
+              ></input>
+            </div>
           </div>
           <div className="annotation-row">
-          <div>Q: <input onChange={(event) => {changed("Q", event.target.value)}} type="number" value={props.annotationMap[props.student.student_id]["Q"]}></input></div>
-          <div>R: <input onChange={(event) => {changed("R", event.target.value)}} type="number" value={props.annotationMap[props.student.student_id]["R"]}></input></div>
-          <div>F: <input onChange={(event) => {changed("F", event.target.value)}} type="number" value={props.annotationMap[props.student.student_id]["F"]}></input></div>
+            <div>
+              Q:
+              <input
+                onChange={(event) => {
+                  changed("Q", event.target.value);
+                }}
+                type="number"
+                value={props.annotationMap[props.student.id]["Q"]}
+              ></input>
+            </div>
+            <div>
+              R:
+              <input
+                onChange={(event) => {
+                  changed("R", event.target.value);
+                }}
+                type="number"
+                value={props.annotationMap[props.student.id]["R"]}
+              ></input>
+            </div>
+            <div>
+              F:
+              <input
+                onChange={(event) => {
+                  changed("F", event.target.value);
+                }}
+                type="number"
+                value={props.annotationMap[props.student.id]["F"]}
+              ></input>
+            </div>
           </div>
         </div>
-        <div className="modal-save" onClick={props.closeModal}>Save</div>
+        <div className="modal-save" onClick={props.closeModal}>
+          Save
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default Modal;
