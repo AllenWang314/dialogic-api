@@ -15,7 +15,9 @@ import CurvedArrow from "./CurvedArrow";
 const DEFAULT_COUNT = 13;
 
 const Session = () => {
-  const [seats, setSeats] = useState(Array(DEFAULT_COUNT).fill({ student: null })); // list of student ids
+  const [seats, setSeats] = useState(
+    Array(DEFAULT_COUNT).fill({ student: null })
+  ); // list of student ids
   const [students, setStudents] = useState(STUDENTS_AVERAGE); // map student id to student data from API
   const [startDiscussion, setStartDiscussion] = useState(false); // map student id to student data from API
   const [selected, setSelected] = useState([]);
@@ -44,7 +46,9 @@ const Session = () => {
   };
 
   const assignSeat = (student_id, ind) => {
-    seats.splice(ind, 1, { student: students.find((student) => student.id == student_id) });
+    seats.splice(ind, 1, {
+      student: students.find((student) => student.id == student_id),
+    });
     setSeats([...seats]);
   };
 
@@ -58,7 +62,14 @@ const Session = () => {
   // programatically generate seat graphic
   const generateSeats = (students) => {
     return students.map((obj, ind) => {
-      return <Seat key={ind} index={ind} student={obj} numStudents={students.length} />;
+      return (
+        <Seat
+          key={ind}
+          index={ind}
+          student={obj}
+          numStudents={students.length}
+        />
+      );
     });
   };
 
@@ -127,8 +138,8 @@ const Session = () => {
   };
 
   const computeCoords = (index) => {
-    const x = Math.sin(index * ((2 * Math.PI) / students.length)) * 300;
-    const y = Math.cos(index * ((2 * Math.PI) / students.length)) * 300;
+    const x = Math.sin(index * ((2 * Math.PI) / seats.length)) * 300;
+    const y = Math.cos(index * ((2 * Math.PI) / seats.length)) * 300;
     return [x, y];
   };
 
@@ -163,7 +174,11 @@ const Session = () => {
         <div className={globalstyles["page-wrapper"]}>
           <div className={styles["begin"]}>
             {!startDiscussion && (
-              <Roster onRemove={unassignSeat} students={STUDENTS_AVERAGE} seats={seats} />
+              <Roster
+                onRemove={unassignSeat}
+                students={STUDENTS_AVERAGE}
+                seats={seats}
+              />
             )}
             <div className={styles["circle"]}>
               {generateSeats(seats.map((student) => student.student))}
@@ -184,8 +199,8 @@ const Session = () => {
         </div>
       </div>
       <div className={globalstyles["small-screen"]}>
-        Your screen is too small to view our work! Please switch over to an ipad or laptop. -The
-        Dialogic Team
+        Your screen is too small to view our work! Please switch over to an ipad
+        or laptop. -The Dialogic Team
       </div>
     </>
   );
