@@ -1,9 +1,8 @@
 import styles from "./Session.module.css";
 import Seats from "./components/Seats";
 import { useState, useEffect } from "react";
-import AddButton from "./components/AddButton";
+import AddButtons from "./components/AddButton";
 import Button from "./components/Button";
-import SeatNameButton from "./components/SeatNameButtons";
 import Roster from "./components/Roster";
 import { STUDENTS_MORE, ANNOTATIONS } from "./constants.js";
 import globalstyles from "./global.module.css";
@@ -17,6 +16,7 @@ import RosterApi from "./api/Roster";
 import SessionApi from "./api/Session";
 import Arrows from "./components/Arrows";
 import { FaPlayCircle, FaStopCircle, FaUndo, FaRegEdit } from "react-icons/fa";
+import SeatNameButtons from "./components/SeatNameButtons";
 
 const DEFAULT_COUNT = 8;
 
@@ -40,7 +40,7 @@ const Session = () => {
     SessionApi.getSession(sessionId).then((res) => {
       // set initial session data
       setSession(res.data);
-      setNotes(res.data.notes)
+      setNotes(res.data.notes);
 
       if (res.data.discussion_state !== "initial") {
         setDiscussionState(res.data.discussion_state);
@@ -73,26 +73,11 @@ const Session = () => {
             Math.round((Date.now() - session.start_time * 1000) / 1000)
           );
         } else {
-          console.log("what");
           setSeats(Array(DEFAULT_COUNT).fill(null));
         }
       });
     }
   }, [session]);
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      //if esc key was not pressed in combination with ctrl or alt or shift
-      const isNotCombinedKey = !(
-        event.ctrlKey ||
-        event.altKey ||
-        event.shiftKey
-      );
-      if (isNotCombinedKey) {
-        setSelected([]);
-      }
-    }
-  });
 
   setInterval(() => {
     if (session && discussionState !== "initial" && secondsElapsed) {
@@ -103,7 +88,10 @@ const Session = () => {
   }, 50);
 
   setInterval(() => {
-    if (session && (discussionState == "discussing" || discussionState == "adjust")) {
+    if (
+      session &&
+      (discussionState == "discussing" || discussionState == "adjust")
+    ) {
       SessionApi.updateSession(sessionId, {
         notes: notes,
       });
@@ -137,27 +125,24 @@ const Session = () => {
       notes: notes,
     }).then((res) => {
       setSession(res.data);
-      setDiscussionState("discussing")
+      setDiscussionState("discussing");
       setSeats(
         res.data.student_list.map((student_id) => {
           return students.find((student) => student.id == student_id);
         })
       );
-    }); 
-  }
+    });
+  };
 
+  const modifySeats = () => {
+    return discussionState == "initial" || discussionState == "adjust";
+  };
   const displayAddButtons = () => {
-    return (
-      (discussionState == "initial" || discussionState == "adjust") &&
-      seats.length < 20
-    );
+    return modifySeats() && seats.length < 20;
   };
 
   const displayBeginButton = () => {
-    return (
-      (discussionState == "initial" || discussionState == "adjust") &&
-      seats.filter(Boolean).length > 1
-    );
+    return modifySeats() && seats.filter(Boolean).length > 1;
   };
 
   const undoEdge = () => {
@@ -207,6 +192,7 @@ const Session = () => {
   };
 
   const assignSeat = (student_id, ind) => {
+    console.log(student_id, ind);
     seats.splice(
       ind,
       1,
@@ -222,42 +208,9 @@ const Session = () => {
     }
   };
 
-  // programatically generate plus buttons
-  const generatePlusButtons = (students) => {
-    return students.map((obj, ind) => {
-      return (
-        <AddButton
-          key={ind}
-          index={ind}
-          student={obj}
-          numStudents={students.length}
-          onClick={() => {
-            addSeat(ind);
-          }}
-        />
-      );
-    });
-  };
-
   const generateOuterButtons = (students) => {
     return students.map((obj, ind) => {
-      if (discussionState == "initial" || discussionState == "adjust") {
-        return (
-          <SeatNameButton
-            key={ind}
-            index={ind}
-            student={obj}
-            adjustMode={
-              discussionState == "initial" || discussionState == "adjust"
-            }
-            numStudents={students.length}
-            onAssign={(student_id) => {
-              assignSeat(student_id, ind);
-            }}
-            onRemove={unassignSeat}
-          />
-        );
-      } else {
+      if (!modifySeats()) {
         return (
           <OuterButton
             key={ind}
@@ -275,10 +228,9 @@ const Session = () => {
   };
 
   const notesOnChange = (event) => {
-    event.preventDefault()
-    setNotes(event.target.value)
-  }
-
+    event.preventDefault();
+    setNotes(event.target.value);
+  };
   if (students && roster) {
     return (
       <>
@@ -288,8 +240,7 @@ const Session = () => {
           />
           <div className={globalstyles["page-wrapper"]}>
             <div className={styles["begin"]}>
-              {(discussionState == "initial" ||
-                discussionState == "adjust") && (
+              {modifySeats() && (
                 <Roster
                   onRemove={unassignSeat}
                   students={students}
@@ -307,9 +258,18 @@ const Session = () => {
                   selected={selected}
                   setSelected={setSelected}
                   discussionState={discussionState == "discussing"}
-                  onDelete={() => deleteSeat()}
+                  onDelete={deleteSeat}
                 />
-                {displayAddButtons() && generatePlusButtons(seats)}
+                {displayAddButtons() && (
+                  <AddButtons seats={seats} addSeat={addSeat} />
+                )}
+                {modifySeats() && (
+                  <SeatNameButtons
+                    seats={seats}
+                    onAssign={assignSeat}
+                    onRemove={unassignSeat}
+                  />
+                )}
                 {generateOuterButtons(seats)}
                 {discussionState == "discussing" && (
                   <Arrows seats={seats} edges={edges} />
@@ -324,32 +284,35 @@ const Session = () => {
                 }}
                 openModal={outerButtonClick}
               />
-          {(discussionState === "initial" || discussionState === "adjust") &&
-              <div className={styles["begin-button"]}>
-                {discussionState === "initial" ? (
-                  <Button
-                    size="large"
-                    disabled={!displayBeginButton()}
-                    onClick={() => beginDiscussion()}
-                  >
-                    Start Discussion
-                  </Button>
-                ) : (
-                  <Button
-                    size="large"
-                    disabled={!displayBeginButton()}
-                    onClick={() => finishAdjustment()}
-                  >
-                    Finish Adjustment
-                  </Button>
-                )}
-              </div>
-  }
-              {!(
-                discussionState == "initial" || discussionState == "adjust"
-              ) && (
+              {modifySeats() && (
+                <div className={styles["begin-button"]}>
+                  {discussionState === "initial" ? (
+                    <Button
+                      size="large"
+                      disabled={!displayBeginButton()}
+                      onClick={() => beginDiscussion()}
+                    >
+                      Start Discussion
+                    </Button>
+                  ) : (
+                    <Button
+                      size="large"
+                      disabled={!displayBeginButton()}
+                      onClick={() => finishAdjustment()}
+                    >
+                      Finish Adjustment
+                    </Button>
+                  )}
+                </div>
+              )}
+              {!modifySeats() && (
                 <div className={styles["session-right"]}>
-                  <textarea className={styles["notes"]} onChange={notesOnChange}>{notes}</textarea>
+                  <textarea
+                    className={styles["notes"]}
+                    onChange={notesOnChange}
+                  >
+                    {notes}
+                  </textarea>
                   <div className={styles["button-panel"]}>
                     <Button
                       style={{

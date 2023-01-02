@@ -11,17 +11,14 @@
     flex-direction: row;
     gap: 3px;
     border-radius: 5px;
-    /* border: 1px solid #D3D5D4; */
+    cursor: grab;
 }
 
 .name {
     color: #D3D5D4;
     height: 30px;
-    align-items: center;
     line-height: 30px;
-    margin-bottom: 10px;
-    border: 1px solid #D3D5D4;
     text-align: center;
     border-radius: 5px;
-
+    border: 1px solid #D3D5D4;
 }

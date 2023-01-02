@@ -5,7 +5,7 @@ function AddButton(props) {
   const turnVar = 1 / props.numStudents;
 
   const onClick = (_event) => {
-    props.onClick();
+    props.onClick(props.index);
   };
 
   // this part is where we did linear regression over what
@@ -42,4 +42,18 @@ function AddButton(props) {
   );
 }
 
-export default AddButton;
+// programatically generate plus buttons
+const AddButtons = (props) => {
+  return props.seats.map((student, ind) => {
+    return (
+      <AddButton
+        key={ind}
+        index={ind}
+        student={student}
+        numStudents={props.seats.length}
+        onClick={props.addSeat}
+      />
+    );
+  });
+};
+export default AddButtons;
