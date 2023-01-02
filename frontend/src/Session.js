@@ -8,7 +8,7 @@ import { STUDENTS_MORE, ANNOTATIONS } from "./constants.js";
 import globalstyles from "./global.module.css";
 import Navbar from "./components/Navbar";
 import React from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import SeatButtons from "./components/SeatButtons";
 import OuterButton from "./components/OuterButton";
 import Modal from "./components/Modal";
@@ -35,6 +35,8 @@ const Session = () => {
   const [discussionState, setDiscussionState] = useState("initial"); // map student id to student data from API
   const [selected, setSelected] = useState(null);
   const [edges, setEdges] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     SessionApi.getSession(sessionId).then((res) => {
@@ -134,6 +136,26 @@ const Session = () => {
     });
   };
 
+  const endDiscussion = () => {
+    SessionApi.updateSession(session.id, {
+      student_list: seats.filter(Boolean).map((seat) => {
+        return seat.id;
+      }),
+      discussion_state: "finished",
+      end_time: Math.round(Date.now() / 1000),
+      notes: notes,
+    }).then((res) => {
+      setDiscussionState(res.data.discussion_state);
+      setSession(res.data);
+      setSeats(
+        res.data.student_list.map((student_id) => {
+          return students.find((student) => student.id == student_id);
+        })
+      );
+      return navigate(`/summary/${res.data.id}`);
+    });
+  };
+
   const modifySeats = () => {
     return discussionState == "initial" || discussionState == "adjust";
   };
@@ -192,7 +214,6 @@ const Session = () => {
   };
 
   const assignSeat = (student_id, ind) => {
-    console.log(student_id, ind);
     seats.splice(
       ind,
       1,
@@ -321,7 +342,7 @@ const Session = () => {
                         width: "100px",
                         bottom: "10%",
                       }}
-                      onClick={() => undoEdge()}
+                      onClick={() => endDiscussion()}
                     >
                       <div>Stop</div> <FaStopCircle />
                     </Button>

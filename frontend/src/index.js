@@ -1,15 +1,16 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
 import {
   createBrowserRouter,
   RouterProvider,
   Route,
   Link,
 } from "react-router-dom";
-import reportWebVitals from './reportWebVitals';
-import Session from './Session';
-import Splash from './Splash';
+import reportWebVitals from "./reportWebVitals";
+import Session from "./Session";
+import Splash from "./Splash";
+import Summary from "./Summary";
 
 const router = createBrowserRouter([
   {
@@ -18,15 +19,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/session/:sessionId",
-    element: <Session/>,
+    element: <Session />,
   },
   {
-    path: "/summary",
-    element: (
-      <div>
-        <h1>Summary page</h1>
-      </div>
-    ),
+    path: "/summary/:sessionId",
+    element: <Summary />,
   },
   {
     path: "/summary",
@@ -38,7 +35,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <RouterProvider router={router} />
