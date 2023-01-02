@@ -17,10 +17,12 @@ const Summary = () => {
   const [edges, setEdges] = useState(null);
   const [seats, setSeats] = useState(null); // list of student ids
   const [replayIndex, setReplayIndex] = useState(1); // list of student ids
-
+  const [sessionTime, setSessionTime] = useState(null); // list of student ids
   useEffect(() => {
     SessionApi.getSession(sessionId).then((session) => {
       setEdges(session.data.graph);
+      console.log(session.data);
+      setSessionTime(session.data.end_time - session.data.start_time);
       RosterApi.getStudents(session.data.roster).then((res) => {
         setSeats(
           session.data.student_list.map((student_id) => {
@@ -49,13 +51,19 @@ const Summary = () => {
                 onDelete={null}
               />
             </div>
-            <h1>
+            <div>
               Graph density:{" "}
               {(edges.length / (seats.length * (seats.length - 1)) / 2).toFixed(
                 2
               )}
-            </h1>
-            <h1>Total turns taken: {edges.length}</h1>
+            </div>
+            <div className={styles["timer"]}>{`Discussion length: ${Math.floor(
+              sessionTime / 60
+            )}:${(sessionTime % 60).toLocaleString("en-US", {
+              minimumIntegerDigits: 2,
+            })}`}</div>
+            <div>Total turns taken: {edges.length}</div>
+
             <div style={{ display: "flex", flexDirection: "row" }}>
               {replayIndex < edges.length - 1 && (
                 <Button

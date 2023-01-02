@@ -51,6 +51,8 @@ const Session = () => {
         );
       }
       setEdges(res.data.graph);
+      setAnnotationMap(res.data.annotations);
+      console.log(res.data.annotations);
     });
   }, []);
 
@@ -176,11 +178,6 @@ const Session = () => {
     setSelected(null);
   };
 
-  // modal listener outer button
-  const outerButtonClick = (student) => {
-    setAnnotationModalStudent(student);
-  };
-
   // listener for drawing lines
   useEffect(() => {
     if (selected) {
@@ -196,6 +193,14 @@ const Session = () => {
       });
     }
   }, [edges]);
+
+  useEffect(() => {
+    if (annotationMap) {
+      SessionApi.updateSession(sessionId, {
+        annotations: annotationMap,
+      });
+    }
+  }, [annotationMap]);
 
   const addSeat = (ind) => {
     // adds a seat in students after index ind
@@ -220,6 +225,19 @@ const Session = () => {
       students.find((student) => student.id == student_id)
     );
     setSeats([...seats]);
+    if (!annotationMap[student_id]) {
+      const default_annotations = {
+        T: 0,
+        A: 0,
+        C: 0,
+        Q: 0,
+        R: 0,
+      };
+      setAnnotationMap({
+        ...annotationMap,
+        ...{ [student_id]: default_annotations },
+      });
+    }
   };
 
   const unassignSeat = (ind) => {
@@ -240,7 +258,7 @@ const Session = () => {
             numStudents={students.length}
             annotationMap={annotationMap}
             setAnnotationMap={setAnnotationMap}
-            outerButtonClick={outerButtonClick}
+            outerButtonClick={setAnnotationModalStudent}
             showAnnotations={true}
           />
         );
@@ -303,7 +321,7 @@ const Session = () => {
                 closeModal={() => {
                   setAnnotationModalStudent(null);
                 }}
-                openModal={outerButtonClick}
+                openModal={setAnnotationModalStudent}
               />
               {modifySeats() && (
                 <div className={styles["begin-button"]}>
