@@ -28,7 +28,6 @@ const SeatNameButton = (props) => {
     ev.preventDefault();
     const studentID = ev.dataTransfer.getData("studentID");
     const seatIndex = ev.dataTransfer.getData("index");
-
     props.onAssign(studentID, props.index);
     props.onRemove(seatIndex);
   }
@@ -40,13 +39,10 @@ const SeatNameButton = (props) => {
     props.index > props.numStudents / 4 &&
     props.index < (props.numStudents * 3) / 4;
   const flipTransform = flipName ? "scaleY(-1) scaleX(-1)" : "";
+
   // programatically inject styles
-  document.addEventListener("dragstart", (event) => {
-    set_zIndex(20);
-  });
-  document.addEventListener("dragend", (event) => {
-    set_zIndex(1);
-  });
+  document.addEventListener("dragstart", (event) => set_zIndex(20));
+  document.addEventListener("dragend", (event) => set_zIndex(1));
 
   const styles = {
     transform:
@@ -61,17 +57,12 @@ const SeatNameButton = (props) => {
     <div
       className={cssstyles["seatname-button"]}
       style={styles}
-      draggable={props.adjustMode}
+      draggable="true"
       onDragOver={allowDrop}
       onDragStart={drag}
       onDrop={drop}
     >
-      <div
-        className={cssstyles["name"]}
-        style={{
-          width: `${width}px`,
-        }}
-      >
+      <div className={cssstyles["name"]} style={{ width: `${width}px` }}>
         {getName(props.student)}
       </div>
     </div>
