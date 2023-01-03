@@ -7,7 +7,6 @@ import Arrows from "./components/Arrows";
 import Button from "./components/Button";
 import Navbar from "./components/Navbar";
 import SeatButtons from "./components/SeatButtons";
-import SeatNameButtons from "./components/SeatNameButtons";
 import Seats from "./components/Seats";
 import globalstyles from "./global.module.css";
 import styles from "./Session.module.css";
@@ -39,7 +38,7 @@ const Summary = () => {
         <Navbar />
         <div className={globalstyles["page-wrapper"]}>
           <div className={styles["begin"]} style={{ flexDirection: "column" }}>
-            <h1> Summary</h1>
+            <h1 style={{ color: "white" }}> Summary</h1>
             <div className={styles["circle"]}>
               <Seats seats={seats} selected={-1} discussionState={true} />
               <Arrows seats={seats} edges={edges.slice(0, replayIndex + 1)} />
@@ -51,21 +50,35 @@ const Summary = () => {
                 onDelete={null}
               />
             </div>
-            <div>
-              Graph density:{" "}
-              {(edges.length / (seats.length * (seats.length - 1)) / 2).toFixed(
-                2
-              )}
-            </div>
-            <div className={styles["timer"]}>{`Discussion length: ${Math.floor(
-              sessionTime / 60
-            )}:${(sessionTime % 60).toLocaleString("en-US", {
-              minimumIntegerDigits: 2,
-            })}`}</div>
-            <div>Total turns taken: {edges.length}</div>
-
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              {replayIndex < edges.length - 1 && (
+            <div className={styles["session-right"]}>
+              <div style={{ color: "white" }}>
+                <div>
+                  Graph density:{" "}
+                  {(
+                    edges.length /
+                    (seats.length * (seats.length - 1)) /
+                    2
+                  ).toFixed(2)}
+                </div>
+                <div
+                  className={styles["timer"]}
+                >{`Average reply length: ${Math.floor(
+                  Math.round(sessionTime / edges.length) / 60
+                )}:${(
+                  Math.round(sessionTime / edges.length) % 60
+                ).toLocaleString("en-US", {
+                  minimumIntegerDigits: 2,
+                })}`}</div>
+                <div
+                  className={styles["timer"]}
+                >{`Total discussion length: ${Math.floor(sessionTime / 60)}:${(
+                  sessionTime % 60
+                ).toLocaleString("en-US", {
+                  minimumIntegerDigits: 2,
+                })}`}</div>
+                <div>Total turns taken: {edges.length}</div>
+              </div>
+              <div className={styles["button-panel"]}>
                 <Button
                   style={{
                     position: "absolute",
@@ -73,24 +86,24 @@ const Summary = () => {
                     width: "100px",
                     bottom: "10%",
                   }}
-                  onClick={() => setReplayIndex(replayIndex + 1)}
-                >
-                  <div>Forward</div>
-                </Button>
-              )}
-              {replayIndex > 0 && (
-                <Button
-                  style={{
-                    position: "absolute",
-                    height: "50px",
-                    width: "100px",
-                    bottom: "10%",
-                  }}
+                  disabled={replayIndex <= 0}
                   onClick={() => setReplayIndex(replayIndex - 1)}
                 >
                   <div>Backward</div>
                 </Button>
-              )}
+                <Button
+                  style={{
+                    position: "absolute",
+                    height: "50px",
+                    width: "100px",
+                    bottom: "10%",
+                  }}
+                  disabled={replayIndex >= edges.length - 1}
+                  onClick={() => setReplayIndex(replayIndex + 1)}
+                >
+                  <div>Forward</div>
+                </Button>
+              </div>
             </div>
           </div>
         </div>

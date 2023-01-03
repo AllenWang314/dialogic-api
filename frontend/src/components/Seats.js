@@ -19,6 +19,9 @@ const Seat = (props) => {
     props.showName && props.selected == props.student?.id
       ? "#FFFFFF"
       : "#D3D5D4";
+
+  const STROKE_WIDTH =
+    props.showName && props.selected == props.student?.id ? 35 : 30;
   const styles = {
     transform: `rotate(${turnVar * props.index}turn)`,
   };
@@ -41,7 +44,7 @@ const Seat = (props) => {
           cy="500"
           fillOpacity="0"
           stroke={STROKE_COLOR}
-          strokeWidth="30"
+          strokeWidth={STROKE_WIDTH}
           pathLength="1"
           strokeDashoffset={`${
             0.25 + ((1 / props.numStudents) * STROKE_FRACTION) / 2
