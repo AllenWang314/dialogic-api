@@ -3,10 +3,10 @@
   background-color: #183A37;
   min-height: 100vh;
   min-width: 100vw;
-  display: flex;
+  /* display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: center; */
 }
 
 .App-header {
@@ -38,6 +38,8 @@
 
 .page-wrapper {
   padding-top: 20px;
+  height: 100vh;
+  width: 100vw;
 }
 
 /* disable interaction on small screens */

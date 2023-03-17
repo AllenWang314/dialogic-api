@@ -11,9 +11,7 @@
 }  
 
 .roster {
-    position: absolute;
-    left: 30px;
-    top: 15%;
+    margin: 50px;
     display: flex;
     flex-direction: column;
     gap: 10px;

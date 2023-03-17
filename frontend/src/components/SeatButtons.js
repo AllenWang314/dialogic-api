@@ -46,7 +46,7 @@ function SeatButton(props) {
 // programatically generate inner buttons
 const SeatButtons = (props) => {
   const displayDeleteButtons = () => {
-    return !props.discussionState && props.seats.length > 2;
+    return !props.discussionState && props.seats.length > 4;
   };
 
   return props.seats.map((student, ind) => {

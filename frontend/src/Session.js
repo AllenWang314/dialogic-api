@@ -162,11 +162,11 @@ const Session = () => {
     return discussionState == "initial" || discussionState == "adjust";
   };
   const displayAddButtons = () => {
-    return modifySeats() && seats.length < 20;
+    return modifySeats() && seats.length < 16;
   };
 
   const displayBeginButton = () => {
-    return modifySeats() && seats.filter(Boolean).length > 1;
+    return modifySeats() && seats.filter(Boolean).length > 3;
   };
 
   const undoEdge = () => {
@@ -279,13 +279,6 @@ const Session = () => {
           />
           <div className={globalstyles["page-wrapper"]}>
             <div className={styles["begin"]}>
-              {modifySeats() && (
-                <Roster
-                  onRemove={unassignSeat}
-                  students={students}
-                  seats={seats}
-                />
-              )}
               <div className={styles["circle"]}>
                 <Seats
                   seats={seats}
@@ -343,6 +336,13 @@ const Session = () => {
                     </Button>
                   )}
                 </div>
+              )}
+              {modifySeats() && (
+                <Roster
+                  onRemove={unassignSeat}
+                  students={students}
+                  seats={seats}
+                />
               )}
               {!modifySeats() && (
                 <div className={styles["session-right"]}>
